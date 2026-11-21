@@ -180,3 +180,7 @@ table.t tr.void td{color:var(--faint);text-decoration:line-through}
 
 .tcard.counter{grid-column:span 2;min-height:96px}
 @media (max-width:480px){.tcard.counter{grid-column:1/-1}}
+
+.login{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.login-box{width:min(380px,100%);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px}
+.login-box h1{margin:4px 0 6px;font-size:26px}

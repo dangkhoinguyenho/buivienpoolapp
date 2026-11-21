@@ -523,7 +523,8 @@ function openSummary() {
   const busy = Object.keys(SESS).filter(k => k !== '_counter').length;
   openPanel(`<div class="panel-h"><h2>${esc(t('summary'))} · ${esc(curDay)}</h2><button class="xbtn" data-close>✕</button></div>
     <div class="panel-b">${busy ? `<p style="color:var(--amber)">⚠ ${busy} ${esc(t('tablesBusy'))}</p>` : ''}${summaryHTML(r)}</div>
-    <div class="panel-f"><button style="width:100%" id="s-print">🖨 ${esc(t('printSummary'))}</button></div>`, panelOpts());
+    <div class="panel-f row"><button class="grow" id="s-print">🖨 ${esc(t('printSummary'))}</button>${DB.mode === 'cloud' ? `<button class="ghost" id="s-out">${esc(t('signOut'))}</button>` : ''}</div>`, panelOpts());
+  const so = $('#s-out'); if (so) so.onclick = async () => { if (await confirmBox(t('signOutConfirm'), t('signOut'), true)) signOutDevice(); };
   $('#s-print').onclick = () => {
     const L = (a, b) => `<div class="l"><span>${a}</span><span>${b}</span></div>`;
     printHTML(`<div class="c b">${esc(S.shopName)}</div><div class="c">${esc(t('summary'))} ${esc(curDay)}</div><hr>${L(esc(t('count')), r.count)}${L(esc(t('total')), money(r.total))}<hr>${L(esc(t('cash')), money(r.cash))}${L(esc(t('card')), money(r.card))}${L(esc(t('zelle')), money(r.zelle))}<hr>${Object.entries(r.byType).map(([k, v]) => L(esc(typeName(S, k)), money(v.time))).join('')}${L(esc(t('itemRevenue')), money(r.items))}${L(esc(t('discounts')), money(r.discount))}<hr>${L(esc(t('voids')), r.voidCount)}${L(esc(t('cancelledTables')), r.cancelCount)}<hr><div class="c">${dateTimeOf(Date.now())}</div>`);
@@ -533,8 +534,7 @@ function openSummary() {
 /* ---------- Boot ---------- */
 (async () => {
   registerSW();
-  DB = await openDB();
-  if (needsSetup(DB)) return setupGate('register');
+  DB = await openDB('register');
   installHint();
   DB.onStatus(st => statusDot($('#st'), st));
   DB.onSettings(s => { S = normSettings(s); render(); rerenderPanel(); });

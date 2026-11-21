@@ -52,6 +52,8 @@ MS.en.menuHelp = 'Every item on sale shows as a big button on the table screen, 
 MS.en.newPinTitle = 'Create a manager PIN'; MS.vi.newPinTitle = 'Tạo mã PIN quản lý';
 MS.en.newPinHelp = 'At least 4 digits. It is asked whenever the Manager app is opened, so staff with the Register link cannot open it.'; MS.vi.newPinHelp = 'Ít nhất 4 số. App Quản lý sẽ hỏi mã này mỗi khi mở, để nhân viên có link thu ngân không vào được.';
 MS.en.pinShort = 'PIN must be at least 4 characters'; MS.vi.pinShort = 'PIN phải có ít nhất 4 ký tự'; MS.en.pinAgain = 'Enter the PIN again'; MS.vi.pinAgain = 'Nhập lại mã PIN'; MS.en.pinMismatch = 'PINs do not match'; MS.vi.pinMismatch = 'Hai mã PIN không khớp';
+Object.assign(MS.en, { sync: 'Logins & backup', demoMode: 'Demo (this device only)', signedInAs: 'Signed in as', regLogin: 'Register login (store iPads)', regLoginHelp: 'Username: register. Changing this password signs out every iPad within about an hour; sign them in again with the new password. Do this when a staff member who knew it leaves.', currentRegPw: 'Current Register password', newPw: 'New password (at least 6 characters)', newPwAgain: 'New password again', changeRegPw: 'Change Register password', mgrLogin: 'Manager login (you)', currentPw: 'Current password', changeMgrPw: 'Change my password', pwShort: 'Password must be at least 6 characters', pwWrong: 'Current password is wrong', regPwChanged: 'Register password changed – sign the iPads in again', mgrSignOutConfirm: 'Sign out of the Manager on this device?' });
+Object.assign(MS.vi, { sync: 'Đăng nhập & sao lưu', demoMode: 'Bản demo (chỉ máy này)', signedInAs: 'Đang đăng nhập', regLogin: 'Tài khoản Thu ngân (iPad của quán)', regLoginHelp: 'Tên đăng nhập: register. Đổi mật khẩu này sẽ đăng xuất mọi iPad trong khoảng một giờ; đăng nhập lại bằng mật khẩu mới. Làm việc này khi nhân viên biết mật khẩu nghỉ việc.', currentRegPw: 'Mật khẩu Thu ngân hiện tại', newPw: 'Mật khẩu mới (ít nhất 6 ký tự)', newPwAgain: 'Nhập lại mật khẩu mới', changeRegPw: 'Đổi mật khẩu Thu ngân', mgrLogin: 'Tài khoản Quản lý (bạn)', currentPw: 'Mật khẩu hiện tại', changeMgrPw: 'Đổi mật khẩu của tôi', pwShort: 'Mật khẩu phải có ít nhất 6 ký tự', pwWrong: 'Mật khẩu hiện tại sai', regPwChanged: 'Đã đổi mật khẩu Thu ngân – hãy đăng nhập lại trên các iPad', mgrSignOutConfirm: 'Đăng xuất Quản lý trên máy này?' });
 MS.en.allFree = 'All tables are free'; MS.vi.allFree = 'Tất cả bàn đang trống';
 const tm = k => (MS[LANG] && MS[LANG][k]) || MS.en[k] || t(k);
 
@@ -358,13 +360,12 @@ function vStore(v) {
    <label>${esc(tm('phone'))}</label><input id="s-p" value="${esc(S.phone)}" inputmode="tel">
    <label>${esc(tm('footer'))}</label><input id="s-f" value="${esc(S.receiptFooter)}">
    <label>${esc(tm('dayStart'))}</label><select id="s-d">${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(h => `<option value="${h}" ${+S.dayStartHour === h ? 'selected' : ''}>${h === 0 ? '12:00 AM' : h + ':00 AM'}</option>`).join('')}</select><div class="small muted">${esc(tm('dayHelp'))}</div></div>
-   <h3>${esc(tm('pin'))}</h3><div class="box"><div class="small muted">${esc(tm('pinHelp'))}</div><div class="row" style="margin-top:10px"><button id="s-pin">${esc(tm('setPin'))}</button>${S.managerPin && DB.mode !== 'cloud' ? `<button class="danger" id="s-unpin">${esc(tm('clearPin'))}</button><span class="muted">●●●●</span>` : ''}</div></div>
    <p class="muted small">v${APP_VERSION}</p>`;
   const bind = (id, k) => $(id, v).onchange = e => { S[k] = e.target.value; saveS(); if (k === 'shopName') $('.topbar h1').textContent = S.shopName + ' · ' + tm('title'); };
   bind('#s-n', 'shopName'); bind('#s-a', 'address'); bind('#s-p', 'phone'); bind('#s-f', 'receiptFooter');
   $('#s-d', v).onchange = e => { S.dayStartHour = +e.target.value; saveS(); };
-  $('#s-pin', v).onclick = async () => { const p = await askNewPin(); if (p) { S.managerPin = p.trim(); sessionStorage.setItem('ph_unlock', p.trim()); saveS(true); view(); } };
-  const up = $('#s-unpin', v); if (up) up.onclick = () => { S.managerPin = ''; saveS(true); view(); };
+  if (0) $('#s-pin', v).onclick = async () => { const p = await askNewPin(); if (p) { S.managerPin = p.trim(); sessionStorage.setItem('ph_unlock', p.trim()); saveS(true); view(); } };
+  const up = null; if (up) up.onclick = () => { S.managerPin = ''; saveS(true); view(); };
 }
 
 /* ---------- Sync & backup ---------- */
@@ -377,45 +378,36 @@ service cloud.firestore {
   }
 }`;
 function vSync(v) {
-  const conn = LS.get('ph_conn', null);
-  const base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
-  const hosted = location.protocol === 'https:' || location.hostname === 'localhost';
-  let h = `<div class="box"><div class="line"><span>${esc(tm('status'))}</span><span class="dot ${DB.mode === 'cloud' ? 'ok' : ''}">${esc(DB.mode === 'cloud' ? tm('cloud') : tm('localOnly'))}</span></div>
-    ${conn ? `<div class="line small muted"><span>Firebase</span><span>${esc(conn.cfg.projectId)}</span></div><div class="line small muted"><span>${esc(tm('storeKey'))}</span><span>${esc(conn.key.slice(0, 4))}••••${esc(conn.key.slice(-3))}</span></div>` : ''}</div>`;
-  if (conn) {
-    const code = encodeConn(conn);
-    const reg = base + 'register.html?connect=' + code, mgr = base + 'manager.html?connect=' + code;
-    h += `<h3>${esc(tm('links'))}</h3><div class="box"><div class="small muted">${esc(tm('linkHelp'))}</div>${hosted ? '' : `<p style="color:var(--amber)" class="small">${esc(tm('hostNote'))}</p>`}
-      <label>${esc(tm('regLink'))}</label><div class="row"><input readonly value="${esc(reg)}"><button data-copy="${esc(reg)}">${esc(tm('copy'))}</button></div>
-      <label>${esc(tm('mgrLink'))}</label><div class="row"><input readonly value="${esc(mgr)}"><button data-copy="${esc(mgr)}">${esc(tm('copy'))}</button></div>
-      <label>Setup code</label><div class="row"><input readonly value="${esc(code)}"><button data-copy="${esc(code)}">${esc(tm('copy'))}</button></div>
-      <button class="danger" id="disc" style="margin-top:14px">${esc(tm('disconnect'))}</button></div>`;
-  } else {
-    h += `<h3>${esc(tm('connectTitle'))}</h3><div class="box">
-      <label>${esc(tm('cfgLabel'))}</label><textarea id="cfg" rows="8" placeholder="const firebaseConfig = {&#10;  apiKey: &quot;...&quot;,&#10;  authDomain: &quot;...&quot;,&#10;  projectId: &quot;...&quot;,&#10;  ...&#10;};"></textarea>
-      <label class="row" style="gap:8px;color:var(--text);font-size:15px"><input type="checkbox" id="upl" checked style="width:22px;min-height:22px"> ${esc(tm('uploadLocal'))}</label>
-      <button class="primary" id="newstore" style="margin-top:10px">${esc(tm('newStore'))}</button>
-      <label style="margin-top:18px">${esc(tm('joinStore'))}</label><div class="row"><input id="join" placeholder="eyJjZmc…"><button id="joinb">${esc(tm('connect'))}</button></div></div>`;
+  const cloud = DB.mode === 'cloud';
+  let h = `<div class="box"><div class="line"><span>${esc(tm('status'))}</span><span class="dot ${cloud ? 'ok' : ''}">${esc(cloud ? tm('cloud') : tm('demoMode'))}</span></div>
+    ${cloud ? `<div class="line small muted"><span>${esc(tm('signedInAs'))}</span><span>${esc((DB.email || '').split('@')[0])}</span></div>` : ''}</div>`;
+  if (cloud) {
+    h += `<h3>${esc(tm('regLogin'))}</h3><div class="box"><p class="small muted" style="margin-top:0">${esc(tm('regLoginHelp'))}</p>
+      <label>${esc(tm('currentRegPw'))}</label><input id="rp-old" type="password" autocomplete="off">
+      <label>${esc(tm('newPw'))}</label><input id="rp-new" type="password" autocomplete="new-password">
+      <label>${esc(tm('newPwAgain'))}</label><input id="rp-new2" type="password" autocomplete="new-password">
+      <button class="primary" id="rp-go" style="margin-top:12px">${esc(tm('changeRegPw'))}</button></div>
+      <h3>${esc(tm('mgrLogin'))}</h3><div class="box">
+      <label>${esc(tm('currentPw'))}</label><input id="mp-old" type="password" autocomplete="current-password">
+      <label>${esc(tm('newPw'))}</label><input id="mp-new" type="password" autocomplete="new-password">
+      <label>${esc(tm('newPwAgain'))}</label><input id="mp-new2" type="password" autocomplete="new-password">
+      <div class="row" style="margin-top:12px"><button class="primary" id="mp-go">${esc(tm('changeMgrPw'))}</button><span class="grow"></span><button class="danger" id="m-out">${esc(t('signOut'))}</button></div></div>`;
   }
-  h += `<h3>${esc(tm('rules'))}</h3><div class="box"><div class="small muted">${esc(tm('rulesHelp'))}</div><pre style="white-space:pre-wrap;font-size:12px;background:var(--bg);padding:10px;border-radius:8px">${esc(RULES)}</pre><button data-copy="${esc(RULES)}">${esc(tm('copy'))}</button></div>`;
   h += `<h3>${esc(tm('backup'))}</h3><div class="box row wrap"><button id="exp">⬇ ${esc(tm('exportJson'))}</button><label style="margin:0"><span class="tag" style="padding:12px 14px;font-size:15px;cursor:pointer">⬆ ${esc(tm('importJson'))}</span><input type="file" id="imp" accept=".json,application/json" class="hidden"></label></div>`;
   v.innerHTML = h;
-  $$('[data-copy]', v).forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast(tm('copied')); } catch (e) { const i = b.previousElementSibling; if (i && i.select) { i.select(); document.execCommand('copy'); toast(tm('copied')); } } });
-  const ds = $('#disc', v); if (ds) ds.onclick = async () => { if (await confirmBox(tm('confirmDisc'), tm('disconnect'), true)) { LS.del('ph_conn'); location.reload(); } };
-  const connectWith = async (conn, upload) => {
-    try {
-      const f = await new FireDB().init(conn.cfg, conn.key);
-      const ex = await f.exportAll(); if (!ex.settings) await f.saveSettings(cleanData(upload ? S : Object.assign(defaultSettings(), { managerPin: S.managerPin })));
-      LS.set('ph_conn', conn); toast('✓ ' + tm('cloud')); setTimeout(() => location.reload(), 600);
-    } catch (e) { fail(e); }
+  const pwFlow = async (id, fn, okMsg) => {
+    const o = $(`#${id}-old`, v).value, n = $(`#${id}-new`, v).value, n2 = $(`#${id}-new2`, v).value;
+    if (n.length < 6) return toast(tm('pwShort')); if (n !== n2) return toast(tm('pinMismatch'));
+    const b = $(`#${id}-go`, v); b.disabled = true;
+    try { await fn(o, n); toast('✓ ' + okMsg); ['old', 'new', 'new2'].forEach(k => $(`#${id}-${k}`, v).value = ''); }
+    catch (e) { const c = String(e && e.code || ''); toast(c.includes('wrong-password') || c.includes('invalid-credential') || c.includes('invalid-login') ? tm('pwWrong') : c.includes('weak') ? tm('pwShort') : 'Error: ' + (e.message || c)); }
+    b.disabled = false;
   };
-  const ns = $('#newstore', v); if (ns) ns.onclick = async () => {
-    let cfg; try { cfg = parseFirebaseConfig($('#cfg').value); } catch (e) { return toast('Config: ' + e.message); }
-    const p = await askNewPin(); if (!p) return;
-    S.managerPin = p; sessionStorage.setItem('ph_unlock', p);
-    connectWith({ cfg, key: uid(24) }, $('#upl').checked);
-  };
-  const jb = $('#joinb', v); if (jb) jb.onclick = () => { let c; try { c = decodeConn($('#join').value); } catch (e) { return toast('Invalid code'); } connectWith(c, false); };
+  if (cloud) {
+    $('#rp-go', v).onclick = () => pwFlow('rp', changeRegisterPassword, tm('regPwChanged'));
+    $('#mp-go', v).onclick = () => pwFlow('mp', changeOwnPassword, tm('saved'));
+    $('#m-out', v).onclick = async () => { if (await confirmBox(tm('mgrSignOutConfirm'), t('signOut'), true)) signOutDevice(); };
+  }
   $('#exp', v).onclick = async () => { try { const d = await DB.exportAll(); download(`poolhall-backup-${ymd(new Date())}.json`, JSON.stringify(d), 'application/json'); } catch (e) { fail(e); } };
   $('#imp', v).onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); await DB.importAll(d); toast(tm('imported')); } catch (er) { fail(er); } };
 }
@@ -443,8 +435,7 @@ function lockScreen() {
 /* ---------- Boot ---------- */
 (async () => {
   registerSW();
-  DB = await openDB();
-  if (needsSetup(DB)) return setupGate('manager');
+  DB = await openDB('manager');
   installHint();
   DB.onStatus(st => { LAST_ST = st; const el = $('#st'); if (el) statusDot(el, st); });
   let first = true;
@@ -453,7 +444,7 @@ function lockScreen() {
     if (!first && stable(n) === stable(S)) return; // our own save echoing back – don't disturb typing
     S = n;
     if (first) { first = false; subBills(); watchEvents(); }
-    if (DB.mode === 'cloud' && !S.managerPin) return pinSetupScreen();
+    if (DB.mode === 'cloud' && s === null && !window._phDefSaved && (window._phDefSaved = true)) DB.saveSettings(cleanData(S)).catch(() => { }); // first run: store the default menu & prices
     if (locked()) return lockScreen();
     const ae = document.activeElement, vw = $('#view'); if (vw && ae && ae.matches('input,textarea,select') && vw.contains(ae)) return; // editing – skip remote refresh
     shell();

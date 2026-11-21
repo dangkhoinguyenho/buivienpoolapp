@@ -45,7 +45,7 @@ const STR = {
     override: 'Price changed', splitMismatch: 'Split amounts must add up to the total', counter: 'Take-away',
     noBills: 'No bills yet today', cancelledTables: 'Cancelled tables', voids: 'Cancelled bills', lang: 'Tiếng Việt',
     business: 'Business day', printSummary: 'Print summary', limitSet: 'Set a time limit', manager: 'Manager',
-    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', startTime: 'Started at', endTime: 'Ended at', stillRunning: 'Still running', endBeforeStart: 'End time must be after the start time', tapToEdit: 'tap to edit', installHint: 'Install as an app: tap Share ⬆ then "Add to Home Screen".', offlineUse: 'Use on this device only (no sync yet)', offlineHelp: 'Works fully on this device. Nothing from your store is shown here unless the device is connected.', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
+    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', registerApp: 'Register', signIn: 'Sign in', username: 'Username', password: 'Password', wrongLogin: 'Wrong username or password', notManagerLogin: 'This login can only open the Register, not the Manager', needInternet: 'Connect to the internet to sign in', needInternetHelp: 'The first sign-in on a device needs Wi-Fi. After that it keeps working offline.', retry: 'Try again', tooMany: 'Too many tries. Wait a minute and try again.', signInHelpReg: 'The owner signs in once on each iPad. It stays signed in after that.', signInHelpMgr: 'Owner only.', signOut: 'Sign out this device', signOutConfirm: 'Sign out? Someone will need the Register password to sign in again.', startTime: 'Started at', endTime: 'Ended at', stillRunning: 'Still running', endBeforeStart: 'End time must be after the start time', tapToEdit: 'tap to edit', installHint: 'Install as an app: tap Share ⬆ then "Add to Home Screen".', offlineUse: 'Use on this device only (no sync yet)', offlineHelp: 'Works fully on this device. Nothing from your store is shown here unless the device is connected.', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
   },
   vi: {
     pool: 'Bida lỗ', carom: '3 bi', all: 'Tất cả', inUse: 'Đang chơi', free: 'Trống', paused: 'Tạm dừng', start: 'Bắt đầu tính giờ',
@@ -65,7 +65,7 @@ const STR = {
     override: 'Đã sửa giá', splitMismatch: 'Tổng các phần phải bằng tổng tiền', counter: 'Mang đi',
     noBills: 'Hôm nay chưa có hóa đơn', cancelledTables: 'Bàn đã hủy', voids: 'Hóa đơn đã hủy', lang: 'English',
     business: 'Ngày làm việc', printSummary: 'In tổng kết', limitSet: 'Đặt giới hạn giờ', manager: 'Quản lý',
-    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', startTime: 'Bắt đầu lúc', endTime: 'Kết thúc lúc', stillRunning: 'Vẫn đang chạy', endBeforeStart: 'Giờ kết thúc phải sau giờ bắt đầu', tapToEdit: 'bấm để sửa', installHint: 'Cài như app: bấm Chia sẻ ⬆ rồi "Thêm vào MH chính".', offlineUse: 'Dùng trên máy này (chưa đồng bộ)', offlineHelp: 'Dùng đầy đủ trên máy này. Dữ liệu cửa hàng chỉ hiện khi máy đã kết nối.', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
+    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', registerApp: 'Thu ngân', signIn: 'Đăng nhập', username: 'Tên đăng nhập', password: 'Mật khẩu', wrongLogin: 'Sai tên đăng nhập hoặc mật khẩu', notManagerLogin: 'Tài khoản này chỉ mở được app Thu ngân, không mở được Quản lý', needInternet: 'Cần kết nối mạng để đăng nhập', needInternetHelp: 'Lần đăng nhập đầu tiên trên máy cần Wi-Fi. Sau đó vẫn dùng được khi mất mạng.', retry: 'Thử lại', tooMany: 'Thử quá nhiều lần. Đợi một phút rồi thử lại.', signInHelpReg: 'Chủ quán đăng nhập một lần trên mỗi iPad. Sau đó app tự giữ đăng nhập.', signInHelpMgr: 'Chỉ dành cho chủ quán.', signOut: 'Đăng xuất máy này', signOutConfirm: 'Đăng xuất? Cần mật khẩu Thu ngân để đăng nhập lại.', startTime: 'Bắt đầu lúc', endTime: 'Kết thúc lúc', stillRunning: 'Vẫn đang chạy', endBeforeStart: 'Giờ kết thúc phải sau giờ bắt đầu', tapToEdit: 'bấm để sửa', installHint: 'Cài như app: bấm Chia sẻ ⬆ rồi "Thêm vào MH chính".', offlineUse: 'Dùng trên máy này (chưa đồng bộ)', offlineHelp: 'Dùng đầy đủ trên máy này. Dữ liệu cửa hàng chỉ hiện khi máy đã kết nối.', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
   }
 };
 let LANG = LS.get('ph_lang', 'en');
@@ -329,13 +329,13 @@ class LocalDB {
 }
 
 class FireDB {
-  async init(cfg, key) {
+  async init(cfg, key, app) {
     const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VER}/`;
     const A = await import(base + 'firebase-app.js');
     const F = await import(base + 'firebase-firestore.js');
     this.F = F; this.mode = 'cloud'; this.key = key;
     const name = 'ph-' + key.slice(0, 6);
-    this.app = A.getApps().find(a => a.name === name) || A.initializeApp(cfg, name);
+    this.app = app || A.getApps().find(a => a.name === name) || A.initializeApp(cfg, name);
     try { this.db = F.initializeFirestore(this.app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); }
     catch (e) { this.db = F.getFirestore(this.app); }
     // quick reachability/permission check (resolves from cache if offline)
@@ -392,14 +392,74 @@ function takeConnectParam() {
   u.searchParams.delete('connect'); history.replaceState(null, '', u.pathname + u.search + u.hash);
   return true;
 }
-async function openDB() {
-  takeConnectParam();
-  const conn = LS.get('ph_conn', null);
-  if (conn && conn.cfg && conn.key) {
-    try { return await new FireDB().init(conn.cfg, conn.key); }
-    catch (e) { console.error(e); setTimeout(() => toast('Sync error: ' + (e.message || e) + ' — using this device only'), 500); }
-  }
-  return new LocalDB();
+/* ---------- Cloud (Firebase) + sign-in ---------- */
+const CLOUD = {
+  cfg: { apiKey: 'AIzaSyCb5s00twwPvjMquF-P0EklOBd-y6qNC7Q', authDomain: 'buivienpool.firebaseapp.com', projectId: 'buivienpool',
+    storageBucket: 'buivienpool.firebasestorage.app', messagingSenderId: '445448335385', appId: '1:445448335385:web:74335f8de5b63bdcd2ba88' },
+  store: 'main', domain: 'buivienpool.firebaseapp.com'
+};
+const loginEmail = u => { u = String(u || '').trim().toLowerCase(); return u.includes('@') ? u : u + '@' + CLOUD.domain; };
+const roleOf = u => !u ? null : u.email === loginEmail('manager') ? 'manager' : u.email === loginEmail('register') ? 'register' : 'other';
+let AUTH = null;
+async function loadAuth() {
+  const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VER}/`;
+  const A = await import(base + 'firebase-app.js'); const Au = await import(base + 'firebase-auth.js');
+  const app = A.getApps().find(x => x.name === '[DEFAULT]') || A.initializeApp(CLOUD.cfg);
+  const auth = Au.getAuth(app);
+  const user = await new Promise(res => { const un = Au.onAuthStateChanged(auth, u => { un(); res(u); }); });
+  return (AUTH = { A, Au, app, auth, user });
+}
+function loginScreen(page, a) {
+  const need = page === 'manager' ? ['manager'] : ['register', 'manager'];
+  return new Promise(res => {
+    const el = document.createElement('div'); el.className = 'login';
+    const draw = () => {
+      el.innerHTML = `<form class="login-box" autocomplete="on"><div class="small muted" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">${esc(page === 'manager' ? t('manager') : t('registerApp'))}</div><h1>${esc(t('signIn'))}</h1>
+        <label>${esc(t('username'))}</label><input name="username" autocomplete="username" autocapitalize="off" value="${page === 'manager' ? 'manager' : 'register'}">
+        <label>${esc(t('password'))}</label><input name="password" type="password" autocomplete="current-password">
+        <p class="small" id="lg-err" style="color:var(--red);min-height:18px;margin:8px 0"></p>
+        <button class="primary big" style="width:100%" type="submit">${esc(t('signIn'))}</button>
+        <p class="small muted" style="margin-top:14px">${esc(page === 'manager' ? t('signInHelpMgr') : t('signInHelpReg'))}</p>
+        <button type="button" class="ghost" id="lg-lang">${esc(t('lang'))}</button></form>`;
+      $('#lg-lang', el).onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); draw(); };
+      $('form', el).onsubmit = async e => {
+        e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', el); btn.disabled = true; $('#lg-err', el).textContent = '';
+        try {
+          await a.Au.signInWithEmailAndPassword(a.auth, loginEmail(f.username.value), f.password.value);
+          if (!need.includes(roleOf(a.auth.currentUser))) { await a.Au.signOut(a.auth); throw { code: 'role' }; }
+          el.remove(); res();
+        } catch (er) {
+          const c = String(er && er.code || '');
+          $('#lg-err', el).textContent = c === 'role' ? t('notManagerLogin') : c.includes('network') ? t('needInternet') : c.includes('too-many') ? t('tooMany') : t('wrongLogin');
+          btn.disabled = false; f.password.select();
+        }
+      };
+      setTimeout(() => { const pw = $('[name=password]', el); pw && pw.focus(); }, 50);
+    };
+    draw(); document.body.appendChild(el);
+  });
+}
+async function openDB(page) {
+  if (window.PH_DEMO) return new LocalDB();
+  let a;
+  try { a = await loadAuth(); }
+  catch (e) { console.error(e); document.body.innerHTML = `<div class="login"><div class="login-box"><h1>${esc(t('needInternet'))}</h1><p class="muted">${esc(t('needInternetHelp'))}</p><button class="primary big" style="width:100%" onclick="location.reload()">${esc(t('retry'))}</button></div></div>`; throw e; }
+  const need = page === 'manager' ? ['manager'] : ['register', 'manager'];
+  if (!a.user || !need.includes(roleOf(a.user))) { if (a.user) await a.Au.signOut(a.auth); await loginScreen(page, a); }
+  const db = await new FireDB().init(CLOUD.cfg, CLOUD.store, a.app);
+  db.role = roleOf(a.auth.currentUser); db.email = a.auth.currentUser.email;
+  return db;
+}
+async function signOutDevice() { try { if (AUTH) await AUTH.Au.signOut(AUTH.auth); } catch (e) { } location.reload(); }
+async function changeRegisterPassword(oldP, newP) { // owner changes the shared Register login; every iPad then has to sign in again
+  const { A, Au } = AUTH; const app2 = A.getApps().find(x => x.name === 'pw') || A.initializeApp(CLOUD.cfg, 'pw');
+  const auth2 = Au.getAuth(app2);
+  const cred = await Au.signInWithEmailAndPassword(auth2, loginEmail('register'), oldP);
+  await Au.updatePassword(cred.user, newP); await Au.signOut(auth2);
+}
+async function changeOwnPassword(oldP, newP) {
+  const { Au, auth } = AUTH; const u = auth.currentUser;
+  await Au.reauthenticateWithCredential(u, Au.EmailAuthProvider.credential(u.email, oldP)); await Au.updatePassword(u, newP);
 }
 function statusDot(el, st) { el.className = 'dot ' + (st === 'ok' ? 'ok' : st === 'off' ? 'off' : ''); el.textContent = st === 'ok' ? t('synced') : st === 'off' ? t('offline') : t('local'); }
 function registerSW() { if (window.PH_DEMO) return; if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => { }); }
@@ -559,3 +619,4 @@ if (typeof MutationObserver !== 'undefined') {
   const startIcons = () => { iconize(document.body); new MutationObserver(ms => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1 || n.nodeType === 3) iconize(n.nodeType === 3 ? n.parentNode : n); }).observe(document.body, { childList: true, subtree: true }); };
   if (document.body) startIcons(); else addEventListener('DOMContentLoaded', startIcons);
 }
+
