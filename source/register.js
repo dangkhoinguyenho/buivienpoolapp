@@ -407,7 +407,7 @@ function openCheckout(id) {
     <div class="row wrap"><span class="muted small">${esc(t('discount'))}</span>${[10, 20, 50].map(p => `<button class="chip" data-qp="${p}">${p}%</button>`).join('')}<button class="chip" id="co-disc">$ / %…</button><button class="chip" data-qp="0">✕</button><button class="chip" id="co-ovr">✎ ${esc(t('changeTotal'))}</button></div>
     <div class="box" style="text-align:center"><div id="co-total" style="font-size:48px;font-weight:800" class="num"></div><div id="co-ovr-note" class="small" style="color:#8a5a00"></div></div>
     <div class="muted small" style="margin:4px 0 8px">${esc(t('pickMethod'))}</div>
-    <div class="paybtns">${['cash', 'card', 'zelle'].map(m => `<button data-m="${m}"><span style="font-size:30px">${MICON[m]}</span>${esc(t(m))}</button>`).join('')}</div>
+    <div class="paybtns">${['cash', 'card', 'zelle'].map(m => `<button data-m="${m}">${esc(t(m))}</button>`).join('')}</div>
     <div style="text-align:center;margin-top:10px"><button class="ghost" data-m="split" style="min-height:38px;font-size:14px">${esc(t('split'))}…</button></div>
     <div id="co-pay"></div>
    </div>
@@ -439,7 +439,7 @@ function openCheckout(id) {
   const payUI = () => {
     const el = $('#co-pay');
     if (st.method === 'split') {
-      el.innerHTML = `<div class="box">${['cash', 'card', 'zelle'].map(m => `<div class="row" style="margin-top:6px"><span style="width:90px">${MICON[m]} ${esc(t(m))}</span><input data-sp="${m}" type="number" inputmode="decimal" step="any" value="${esc(st.split[m])}" placeholder="0.00"><button class="chip" data-fill="${m}">${esc(t('remaining'))}</button></div>`).join('')}<div id="co-rem" style="font-weight:700;margin-top:8px"></div></div>`;
+      el.innerHTML = `<div class="box">${['cash', 'card', 'zelle'].map(m => `<div class="row" style="margin-top:6px"><span style="width:90px;font-weight:600;color:var(--${m})">${esc(t(m))}</span><input data-sp="${m}" type="number" inputmode="decimal" step="any" value="${esc(st.split[m])}" placeholder="0.00"><button class="chip" data-fill="${m}">${esc(t('remaining'))}</button></div>`).join('')}<div id="co-rem" style="font-weight:700;margin-top:8px"></div></div>`;
       $$('[data-sp]', el).forEach(i => i.oninput = () => { st.split[i.dataset.sp] = i.value; paint(); });
       $$('[data-fill]', el).forEach(b => b.onclick = () => {
         const m = b.dataset.fill; const others = ['cash', 'card', 'zelle'].filter(x => x !== m).reduce((a, x) => a + toC(st.split[x]), 0);
@@ -471,7 +471,7 @@ function showReceipt(b, fresh) {
   PANEL = { kind: 'receipt' };
   const m = methodOf(b);
   openPanel(`<div class="panel-h"><h2>${esc(b.tableLabel)}</h2><button class="xbtn" data-close>✕</button></div>
-    <div class="panel-b">${fresh ? `<div class="box" style="text-align:center;padding:22px"><div style="font-size:54px">✓</div><div style="font-size:20px">${esc(t('paidBy'))} <b>${MICON[m] || ''} ${esc(t(m))}</b></div><div style="font-size:44px;font-weight:800">${money(b.total)}</div></div>` : ''}
+    <div class="panel-b">${fresh ? `<div class="box" style="text-align:center;padding:22px"><div style="font-size:54px">✓</div><div style="font-size:20px">${esc(t('paidBy'))} <b style="color:var(--${m === 'split' ? 'text' : m})">${esc(t(m))}</b></div><div style="font-size:44px;font-weight:800">${money(b.total)}</div></div>` : ''}
     <details><summary class="muted" style="cursor:pointer;padding:8px 0">${esc(t('bill2'))} #${esc(b.no)}</summary><div class="rcpt">${receiptHTML(S, b)}</div></details></div>
     <div class="panel-f row"><button class="grow" id="r-print">🖨 ${esc(t('print'))}</button><button class="grow primary big" data-close>${esc(t('done'))}</button></div>`, panelOpts());
   $('#r-print').onclick = () => printHTML(receiptHTML(S, b));
