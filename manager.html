@@ -191,6 +191,7 @@ const toC = d => Math.round((+d || 0) * 100);           // dollars -> cents
 const toD = c => Math.round(c) / 100;                    // cents -> dollars
 const money = d => (d < 0 ? '-' : '') + '$' + Math.abs(+d || 0).toFixed(2);
 const pad = n => String(n).padStart(2, '0');
+const hhmm = ts => { const d = new Date(ts); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
 const clockStr = ms => { if (ms < 0) ms = 0; const s = Math.floor(ms / 1000); return Math.floor(s / 3600) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60); };
 const hm = min => { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h ? `${h}h ${pad(m)}m` : `${m}m`; };
 const timeOf = ts => new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -219,7 +220,7 @@ const STR = {
     override: 'Price changed', splitMismatch: 'Split amounts must add up to the total', counter: 'Counter',
     noBills: 'No bills yet today', cancelledTables: 'Cancelled tables', voids: 'Cancelled bills', lang: 'Tiếng Việt',
     business: 'Business day', printSummary: 'Print summary', limitSet: 'Set a time limit', manager: 'Manager',
-    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
+    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', startTime: 'Timer started at', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
   },
   vi: {
     pool: 'Bida lỗ', carom: 'Bida phăng', all: 'Tất cả', inUse: 'Đang chơi', free: 'Trống', paused: 'Tạm dừng', start: 'Bắt đầu tính giờ',
@@ -239,7 +240,7 @@ const STR = {
     override: 'Đã sửa giá', splitMismatch: 'Tổng các phần phải bằng tổng tiền', counter: 'Quầy',
     noBills: 'Hôm nay chưa có hóa đơn', cancelledTables: 'Bàn đã hủy', voids: 'Hóa đơn đã hủy', lang: 'English',
     business: 'Ngày làm việc', printSummary: 'In tổng kết', limitSet: 'Đặt giới hạn giờ', manager: 'Quản lý',
-    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
+    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', startTime: 'Giờ bắt đầu tính', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
   }
 };
 let LANG = LS.get('ph_lang', 'en');
@@ -613,6 +614,17 @@ function seedDemo() {
 }
 
 const DEMO_VER = '3';
+
+/* ---------- Security gate: a hosted copy that is not connected to a store shows nothing ---------- */
+function needsSetup(db) { return db.mode === 'local' && !window.PH_DEMO && location.protocol === 'https:'; }
+function setupGate(which) {
+  document.body.innerHTML = `<div style="max-width:440px;margin:12vh auto;padding:24px;text-align:center">
+    <div style="font-size:54px">🔒</div><h2>${esc(t('notConnected'))}</h2><p class="muted">${esc(t('notConnectedHelp'))}</p>
+    <input id="g-code" placeholder="${esc(t('setupCode'))}" style="margin-top:10px"><button class="primary big" id="g-go" style="width:100%;margin-top:10px">${esc(t('connect'))}</button>
+    <p><button class="ghost" id="g-lang" style="margin-top:14px">${esc(t('lang'))}</button></p></div>`;
+  $('#g-lang').onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); setupGate(which); };
+  $('#g-go').onclick = () => { try { const c = decodeConn($('#g-code').value); if (!c.cfg || !c.key) throw 0; LS.set('ph_conn', c); location.reload(); } catch (e) { toast('Invalid code'); } };
+}
 </script>
 <script>'use strict';
 /* ===== Manager app (owner): reports, menu, tables & prices, billing rules, store, sync ===== */
@@ -665,11 +677,14 @@ MS.en.feed = 'Notifications'; MS.vi.feed = 'Thông báo'; MS.en.noEvents = 'No a
 MS.en.desk = 'Turn on desktop notifications'; MS.vi.desk = 'Bật thông báo trên máy tính';
 MS.en.quick = 'Quick'; MS.vi.quick = 'Nhanh'; MS.en.quickHelp = '★ Quick items show as one-tap buttons on every table.'; MS.vi.quickHelp = '★ Món "Nhanh" hiện thành nút bấm 1 lần trên mỗi bàn.';
 MS.en.menuHelp = 'Every item on sale shows as a big button on the table screen, grouped by category.'; MS.vi.menuHelp = 'Mỗi món đang bán hiện thành nút lớn trên màn hình bàn, theo nhóm.';
+MS.en.newPinTitle = 'Create a manager PIN'; MS.vi.newPinTitle = 'Tạo mã PIN quản lý';
+MS.en.newPinHelp = 'At least 4 digits. It is asked whenever the Manager app is opened, so staff with the Register link cannot open it.'; MS.vi.newPinHelp = 'Ít nhất 4 số. App Quản lý sẽ hỏi mã này mỗi khi mở, để nhân viên có link thu ngân không vào được.';
+MS.en.pinShort = 'PIN must be at least 4 characters'; MS.vi.pinShort = 'PIN phải có ít nhất 4 ký tự'; MS.en.pinAgain = 'Enter the PIN again'; MS.vi.pinAgain = 'Nhập lại mã PIN'; MS.en.pinMismatch = 'PINs do not match'; MS.vi.pinMismatch = 'Hai mã PIN không khớp';
 MS.en.allFree = 'All tables are free'; MS.vi.allFree = 'Tất cả bàn đang trống';
 const tm = k => (MS[LANG] && MS[LANG][k]) || MS.en[k] || t(k);
 
 let DB, S = defaultSettings(), SESS = {}, BILLS = [], TAB = 'live', EVENTS = [], UNREAD = 0, SEEN = null, unB = null, BFILTER = 'all', BQ = '';
-let LAST_ST = '';
+let LAST_ST = '', SETUP_ONLY = false;
 let RANGE = { preset: 'today', from: '', to: '' };
 const stable = o => JSON.stringify(o, (k, v) => v && typeof v === 'object' && !Array.isArray(v) ? Object.keys(v).sort().reduce((a, x) => (a[x] = v[x], a), {}) : v);
 const fail = e => { console.error(e); toast('Error: ' + (e.message || e)); };
@@ -684,7 +699,7 @@ function saveS(now) {
 const app = $('#app');
 function shell() {
   app.innerHTML = `<div class="topbar"><h1 class="grow">${esc(S.shopName)} · ${esc(tm('title'))}</h1><span id="st" class="dot"></span><button id="b-bell" class="bell">🔔<span class="n ${UNREAD ? '' : 'hidden'}" id="bell-n">${UNREAD}</span></button><button id="b-lang" class="ghost">${esc(t('lang'))}</button></div>
-  <div class="mgr"><div class="chips" id="nav">${['live', 'reports', 'bills', 'menu', 'tables', 'billing', 'store', 'sync'].map(k => `<button class="chip ${TAB === k ? 'sel' : ''}" data-tab="${k}">${esc(tm(k))}</button>`).join('')}</div>
+  <div class="mgr"><div class="chips" id="nav">${(SETUP_ONLY ? ['sync'] : ['live', 'reports', 'bills', 'menu', 'tables', 'billing', 'store', 'sync']).map(k => `<button class="chip ${TAB === k ? 'sel' : ''}" data-tab="${k}">${esc(tm(k))}</button>`).join('')}</div>
   <div id="view" style="max-width:980px;margin:0 auto;padding:0 12px 60px;width:100%"></div></div>`;
   $('#b-bell').onclick = openFeed;
   $('#b-lang').onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); shell(); };
@@ -971,12 +986,12 @@ function vStore(v) {
    <label>${esc(tm('phone'))}</label><input id="s-p" value="${esc(S.phone)}" inputmode="tel">
    <label>${esc(tm('footer'))}</label><input id="s-f" value="${esc(S.receiptFooter)}">
    <label>${esc(tm('dayStart'))}</label><select id="s-d">${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(h => `<option value="${h}" ${+S.dayStartHour === h ? 'selected' : ''}>${h === 0 ? '12:00 AM' : h + ':00 AM'}</option>`).join('')}</select><div class="small muted">${esc(tm('dayHelp'))}</div></div>
-   <h3>${esc(tm('pin'))}</h3><div class="box"><div class="small muted">${esc(tm('pinHelp'))}</div><div class="row" style="margin-top:10px"><button id="s-pin">${esc(tm('setPin'))}</button>${S.managerPin ? `<button class="danger" id="s-unpin">${esc(tm('clearPin'))}</button><span class="muted">●●●●</span>` : ''}</div></div>
+   <h3>${esc(tm('pin'))}</h3><div class="box"><div class="small muted">${esc(tm('pinHelp'))}</div><div class="row" style="margin-top:10px"><button id="s-pin">${esc(tm('setPin'))}</button>${S.managerPin && DB.mode !== 'cloud' ? `<button class="danger" id="s-unpin">${esc(tm('clearPin'))}</button><span class="muted">●●●●</span>` : ''}</div></div>
    <p class="muted small">v${APP_VERSION}</p>`;
   const bind = (id, k) => $(id, v).onchange = e => { S[k] = e.target.value; saveS(); if (k === 'shopName') $('.topbar h1').textContent = S.shopName + ' · ' + tm('title'); };
   bind('#s-n', 'shopName'); bind('#s-a', 'address'); bind('#s-p', 'phone'); bind('#s-f', 'receiptFooter');
   $('#s-d', v).onchange = e => { S.dayStartHour = +e.target.value; saveS(); };
-  $('#s-pin', v).onclick = async () => { const p = await promptBox(tm('setPin'), '', 'password'); if (p && p.trim()) { S.managerPin = p.trim(); sessionStorage.setItem('ph_unlock', p.trim()); saveS(true); view(); } };
+  $('#s-pin', v).onclick = async () => { const p = await askNewPin(); if (p) { S.managerPin = p.trim(); sessionStorage.setItem('ph_unlock', p.trim()); saveS(true); view(); } };
   const up = $('#s-unpin', v); if (up) up.onclick = () => { S.managerPin = ''; saveS(true); view(); };
 }
 
@@ -1018,17 +1033,34 @@ function vSync(v) {
   const connectWith = async (conn, upload) => {
     try {
       const f = await new FireDB().init(conn.cfg, conn.key);
-      if (upload) { const ex = await f.exportAll(); if (!ex.settings) await f.saveSettings(cleanData(S)); }
+      const ex = await f.exportAll(); if (!ex.settings) await f.saveSettings(cleanData(upload ? S : Object.assign(defaultSettings(), { managerPin: S.managerPin })));
       LS.set('ph_conn', conn); toast('✓ ' + tm('cloud')); setTimeout(() => location.reload(), 600);
     } catch (e) { fail(e); }
   };
-  const ns = $('#newstore', v); if (ns) ns.onclick = () => { let cfg; try { cfg = parseFirebaseConfig($('#cfg').value); } catch (e) { return toast('Config: ' + e.message); } connectWith({ cfg, key: uid(24) }, $('#upl').checked); };
+  const ns = $('#newstore', v); if (ns) ns.onclick = async () => {
+    let cfg; try { cfg = parseFirebaseConfig($('#cfg').value); } catch (e) { return toast('Config: ' + e.message); }
+    const p = await askNewPin(); if (!p) return;
+    S.managerPin = p; sessionStorage.setItem('ph_unlock', p);
+    connectWith({ cfg, key: uid(24) }, $('#upl').checked);
+  };
   const jb = $('#joinb', v); if (jb) jb.onclick = () => { let c; try { c = decodeConn($('#join').value); } catch (e) { return toast('Invalid code'); } connectWith(c, false); };
   $('#exp', v).onclick = async () => { try { const d = await DB.exportAll(); download(`poolhall-backup-${ymd(new Date())}.json`, JSON.stringify(d), 'application/json'); } catch (e) { fail(e); } };
   $('#imp', v).onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); await DB.importAll(d); toast(tm('imported')); } catch (er) { fail(er); } };
 }
 
 /* ---------- PIN lock ---------- */
+async function askNewPin() {
+  const p = await promptBox(tm('newPinTitle'), '', 'password', `<p class="small muted" style="margin-top:0">${esc(tm('newPinHelp'))}</p>`);
+  if (p == null) return null;
+  if (p.trim().length < 4) { toast(tm('pinShort')); return null; }
+  const p2 = await promptBox(tm('pinAgain'), '', 'password'); if (p2 == null) return null;
+  if (p2.trim() !== p.trim()) { toast(tm('pinMismatch')); return null; }
+  return p.trim();
+}
+function pinSetupScreen() {
+  app.innerHTML = `<div style="max-width:380px;margin:16vh auto;text-align:center;padding:20px"><div style="font-size:50px">🔐</div><h2>${esc(tm('newPinTitle'))}</h2><p class="muted">${esc(tm('newPinHelp'))}</p><button class="primary big" style="width:100%" id="mkpin">${esc(tm('setPin'))}</button></div>`;
+  $('#mkpin').onclick = async () => { const p = await askNewPin(); if (!p) return; S.managerPin = p; sessionStorage.setItem('ph_unlock', p); saveS(true); shell(); };
+}
 function locked() { return S.managerPin && sessionStorage.getItem('ph_unlock') !== S.managerPin; }
 function lockScreen() {
   app.innerHTML = `<div style="max-width:320px;margin:18vh auto;text-align:center;padding:20px"><h2>🔒 ${esc(tm('enterPin'))}</h2><input id="pin" type="password" inputmode="numeric" style="text-align:center;font-size:28px;letter-spacing:.3em"><button class="primary big" style="width:100%;margin-top:12px" id="pinok">${esc(t('ok'))}</button></div>`;
@@ -1040,6 +1072,7 @@ function lockScreen() {
 (async () => {
   registerSW();
   DB = await openDB();
+  if (needsSetup(DB)) { SETUP_ONLY = true; TAB = 'sync'; }
   DB.onStatus(st => { LAST_ST = st; const el = $('#st'); if (el) statusDot(el, st); });
   let first = true;
   DB.onSettings(s => {
@@ -1047,6 +1080,7 @@ function lockScreen() {
     if (!first && stable(n) === stable(S)) return; // our own save echoing back – don't disturb typing
     S = n;
     if (first) { first = false; subBills(); watchEvents(); }
+    if (DB.mode === 'cloud' && !S.managerPin) return pinSetupScreen();
     if (locked()) return lockScreen();
     const ae = document.activeElement, vw = $('#view'); if (vw && ae && ae.matches('input,textarea,select') && vw.contains(ae)) return; // editing – skip remote refresh
     shell();

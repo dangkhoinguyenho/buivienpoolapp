@@ -49,11 +49,14 @@ MS.en.feed = 'Notifications'; MS.vi.feed = 'Thông báo'; MS.en.noEvents = 'No a
 MS.en.desk = 'Turn on desktop notifications'; MS.vi.desk = 'Bật thông báo trên máy tính';
 MS.en.quick = 'Quick'; MS.vi.quick = 'Nhanh'; MS.en.quickHelp = '★ Quick items show as one-tap buttons on every table.'; MS.vi.quickHelp = '★ Món "Nhanh" hiện thành nút bấm 1 lần trên mỗi bàn.';
 MS.en.menuHelp = 'Every item on sale shows as a big button on the table screen, grouped by category.'; MS.vi.menuHelp = 'Mỗi món đang bán hiện thành nút lớn trên màn hình bàn, theo nhóm.';
+MS.en.newPinTitle = 'Create a manager PIN'; MS.vi.newPinTitle = 'Tạo mã PIN quản lý';
+MS.en.newPinHelp = 'At least 4 digits. It is asked whenever the Manager app is opened, so staff with the Register link cannot open it.'; MS.vi.newPinHelp = 'Ít nhất 4 số. App Quản lý sẽ hỏi mã này mỗi khi mở, để nhân viên có link thu ngân không vào được.';
+MS.en.pinShort = 'PIN must be at least 4 characters'; MS.vi.pinShort = 'PIN phải có ít nhất 4 ký tự'; MS.en.pinAgain = 'Enter the PIN again'; MS.vi.pinAgain = 'Nhập lại mã PIN'; MS.en.pinMismatch = 'PINs do not match'; MS.vi.pinMismatch = 'Hai mã PIN không khớp';
 MS.en.allFree = 'All tables are free'; MS.vi.allFree = 'Tất cả bàn đang trống';
 const tm = k => (MS[LANG] && MS[LANG][k]) || MS.en[k] || t(k);
 
 let DB, S = defaultSettings(), SESS = {}, BILLS = [], TAB = 'live', EVENTS = [], UNREAD = 0, SEEN = null, unB = null, BFILTER = 'all', BQ = '';
-let LAST_ST = '';
+let LAST_ST = '', SETUP_ONLY = false;
 let RANGE = { preset: 'today', from: '', to: '' };
 const stable = o => JSON.stringify(o, (k, v) => v && typeof v === 'object' && !Array.isArray(v) ? Object.keys(v).sort().reduce((a, x) => (a[x] = v[x], a), {}) : v);
 const fail = e => { console.error(e); toast('Error: ' + (e.message || e)); };
@@ -68,7 +71,7 @@ function saveS(now) {
 const app = $('#app');
 function shell() {
   app.innerHTML = `<div class="topbar"><h1 class="grow">${esc(S.shopName)} · ${esc(tm('title'))}</h1><span id="st" class="dot"></span><button id="b-bell" class="bell">🔔<span class="n ${UNREAD ? '' : 'hidden'}" id="bell-n">${UNREAD}</span></button><button id="b-lang" class="ghost">${esc(t('lang'))}</button></div>
-  <div class="mgr"><div class="chips" id="nav">${['live', 'reports', 'bills', 'menu', 'tables', 'billing', 'store', 'sync'].map(k => `<button class="chip ${TAB === k ? 'sel' : ''}" data-tab="${k}">${esc(tm(k))}</button>`).join('')}</div>
+  <div class="mgr"><div class="chips" id="nav">${(SETUP_ONLY ? ['sync'] : ['live', 'reports', 'bills', 'menu', 'tables', 'billing', 'store', 'sync']).map(k => `<button class="chip ${TAB === k ? 'sel' : ''}" data-tab="${k}">${esc(tm(k))}</button>`).join('')}</div>
   <div id="view" style="max-width:980px;margin:0 auto;padding:0 12px 60px;width:100%"></div></div>`;
   $('#b-bell').onclick = openFeed;
   $('#b-lang').onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); shell(); };
@@ -355,12 +358,12 @@ function vStore(v) {
    <label>${esc(tm('phone'))}</label><input id="s-p" value="${esc(S.phone)}" inputmode="tel">
    <label>${esc(tm('footer'))}</label><input id="s-f" value="${esc(S.receiptFooter)}">
    <label>${esc(tm('dayStart'))}</label><select id="s-d">${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(h => `<option value="${h}" ${+S.dayStartHour === h ? 'selected' : ''}>${h === 0 ? '12:00 AM' : h + ':00 AM'}</option>`).join('')}</select><div class="small muted">${esc(tm('dayHelp'))}</div></div>
-   <h3>${esc(tm('pin'))}</h3><div class="box"><div class="small muted">${esc(tm('pinHelp'))}</div><div class="row" style="margin-top:10px"><button id="s-pin">${esc(tm('setPin'))}</button>${S.managerPin ? `<button class="danger" id="s-unpin">${esc(tm('clearPin'))}</button><span class="muted">●●●●</span>` : ''}</div></div>
+   <h3>${esc(tm('pin'))}</h3><div class="box"><div class="small muted">${esc(tm('pinHelp'))}</div><div class="row" style="margin-top:10px"><button id="s-pin">${esc(tm('setPin'))}</button>${S.managerPin && DB.mode !== 'cloud' ? `<button class="danger" id="s-unpin">${esc(tm('clearPin'))}</button><span class="muted">●●●●</span>` : ''}</div></div>
    <p class="muted small">v${APP_VERSION}</p>`;
   const bind = (id, k) => $(id, v).onchange = e => { S[k] = e.target.value; saveS(); if (k === 'shopName') $('.topbar h1').textContent = S.shopName + ' · ' + tm('title'); };
   bind('#s-n', 'shopName'); bind('#s-a', 'address'); bind('#s-p', 'phone'); bind('#s-f', 'receiptFooter');
   $('#s-d', v).onchange = e => { S.dayStartHour = +e.target.value; saveS(); };
-  $('#s-pin', v).onclick = async () => { const p = await promptBox(tm('setPin'), '', 'password'); if (p && p.trim()) { S.managerPin = p.trim(); sessionStorage.setItem('ph_unlock', p.trim()); saveS(true); view(); } };
+  $('#s-pin', v).onclick = async () => { const p = await askNewPin(); if (p) { S.managerPin = p.trim(); sessionStorage.setItem('ph_unlock', p.trim()); saveS(true); view(); } };
   const up = $('#s-unpin', v); if (up) up.onclick = () => { S.managerPin = ''; saveS(true); view(); };
 }
 
@@ -402,17 +405,34 @@ function vSync(v) {
   const connectWith = async (conn, upload) => {
     try {
       const f = await new FireDB().init(conn.cfg, conn.key);
-      if (upload) { const ex = await f.exportAll(); if (!ex.settings) await f.saveSettings(cleanData(S)); }
+      const ex = await f.exportAll(); if (!ex.settings) await f.saveSettings(cleanData(upload ? S : Object.assign(defaultSettings(), { managerPin: S.managerPin })));
       LS.set('ph_conn', conn); toast('✓ ' + tm('cloud')); setTimeout(() => location.reload(), 600);
     } catch (e) { fail(e); }
   };
-  const ns = $('#newstore', v); if (ns) ns.onclick = () => { let cfg; try { cfg = parseFirebaseConfig($('#cfg').value); } catch (e) { return toast('Config: ' + e.message); } connectWith({ cfg, key: uid(24) }, $('#upl').checked); };
+  const ns = $('#newstore', v); if (ns) ns.onclick = async () => {
+    let cfg; try { cfg = parseFirebaseConfig($('#cfg').value); } catch (e) { return toast('Config: ' + e.message); }
+    const p = await askNewPin(); if (!p) return;
+    S.managerPin = p; sessionStorage.setItem('ph_unlock', p);
+    connectWith({ cfg, key: uid(24) }, $('#upl').checked);
+  };
   const jb = $('#joinb', v); if (jb) jb.onclick = () => { let c; try { c = decodeConn($('#join').value); } catch (e) { return toast('Invalid code'); } connectWith(c, false); };
   $('#exp', v).onclick = async () => { try { const d = await DB.exportAll(); download(`poolhall-backup-${ymd(new Date())}.json`, JSON.stringify(d), 'application/json'); } catch (e) { fail(e); } };
   $('#imp', v).onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); await DB.importAll(d); toast(tm('imported')); } catch (er) { fail(er); } };
 }
 
 /* ---------- PIN lock ---------- */
+async function askNewPin() {
+  const p = await promptBox(tm('newPinTitle'), '', 'password', `<p class="small muted" style="margin-top:0">${esc(tm('newPinHelp'))}</p>`);
+  if (p == null) return null;
+  if (p.trim().length < 4) { toast(tm('pinShort')); return null; }
+  const p2 = await promptBox(tm('pinAgain'), '', 'password'); if (p2 == null) return null;
+  if (p2.trim() !== p.trim()) { toast(tm('pinMismatch')); return null; }
+  return p.trim();
+}
+function pinSetupScreen() {
+  app.innerHTML = `<div style="max-width:380px;margin:16vh auto;text-align:center;padding:20px"><div style="font-size:50px">🔐</div><h2>${esc(tm('newPinTitle'))}</h2><p class="muted">${esc(tm('newPinHelp'))}</p><button class="primary big" style="width:100%" id="mkpin">${esc(tm('setPin'))}</button></div>`;
+  $('#mkpin').onclick = async () => { const p = await askNewPin(); if (!p) return; S.managerPin = p; sessionStorage.setItem('ph_unlock', p); saveS(true); shell(); };
+}
 function locked() { return S.managerPin && sessionStorage.getItem('ph_unlock') !== S.managerPin; }
 function lockScreen() {
   app.innerHTML = `<div style="max-width:320px;margin:18vh auto;text-align:center;padding:20px"><h2>🔒 ${esc(tm('enterPin'))}</h2><input id="pin" type="password" inputmode="numeric" style="text-align:center;font-size:28px;letter-spacing:.3em"><button class="primary big" style="width:100%;margin-top:12px" id="pinok">${esc(t('ok'))}</button></div>`;
@@ -424,6 +444,7 @@ function lockScreen() {
 (async () => {
   registerSW();
   DB = await openDB();
+  if (needsSetup(DB)) { SETUP_ONLY = true; TAB = 'sync'; }
   DB.onStatus(st => { LAST_ST = st; const el = $('#st'); if (el) statusDot(el, st); });
   let first = true;
   DB.onSettings(s => {
@@ -431,6 +452,7 @@ function lockScreen() {
     if (!first && stable(n) === stable(S)) return; // our own save echoing back – don't disturb typing
     S = n;
     if (first) { first = false; subBills(); watchEvents(); }
+    if (DB.mode === 'cloud' && !S.managerPin) return pinSetupScreen();
     if (locked()) return lockScreen();
     const ae = document.activeElement, vw = $('#view'); if (vw && ae && ae.matches('input,textarea,select') && vw.contains(ae)) return; // editing – skip remote refresh
     shell();

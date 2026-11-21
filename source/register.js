@@ -241,14 +241,14 @@ function renderTablePanel() {
 function editTimer(id, tid) {
   const s = SESS[id]; if (!s) return; const tm0 = s.timers.find(x => x.id === tid); if (!tm0) return;
   const st = { type: tm0.type, rate: tm0.rate, pct: tm0.pct || 0 };
-  const curMin = Math.round(timerMs(tm0, Date.now()) / M);
   modal(`<h3>⏱ ${esc(timerLabel(S, tm0))}</h3>
     ${tm0.stopAt ? '' : `<div class="row" style="margin-bottom:6px"><button class="grow big ${tm0.pausedAt ? 'primary' : 'warn'}" data-ac="pause">${tm0.pausedAt ? '▶ ' + esc(t('resume')) : '❚❚ ' + esc(t('pause'))}</button><button class="grow big" data-ac="stop">■ ${esc(t('stopTimer'))}</button></div>`}
     <label>${esc(typeOf(S, tm0.type).perPerson ? t('playerName') : t('lineNote'))}</label><input id="te-note" value="${esc(tm0.note || '')}" placeholder="—" ${typeOf(S, tm0.type).perPerson ? 'style="font-size:20px"' : ''}>
     <label>${esc(t('ratePerHr'))}</label><div class="row"><div class="seg grow" id="te-type">${S.tableTypes.map(x => `<button data-ty="${x.id}" class="${x.id === st.type ? 'sel' : ''}">${esc(typeName(S, x.id))}</button>`).join('')}</div><input id="te-rate" type="number" inputmode="decimal" step="any" value="${st.rate}" style="width:90px"></div>
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-tpc="${p}">${p === 50 ? '50% ' + esc(t('practice')) : p === 100 ? esc(t('free100')) : '0%'}</button>`).join('')}<input id="te-pct" type="number" inputmode="decimal" style="width:80px" value="${st.pct}"></div>
     <div id="te-eff" style="font-size:18px;font-weight:700;margin:10px 0;color:var(--blue2)"></div>
-    <label>${esc(t('minutesPlayed'))}</label><input id="te-min" type="number" inputmode="numeric" value="${curMin}">
+    <label>${esc(t('startTime'))}</label><div class="row"><button data-sh="-5" style="min-width:64px">−5m</button><input id="te-start" type="time" value="${hhmm(tm0.startAt)}" style="font-size:22px;text-align:center"><button data-sh="5" style="min-width:64px">+5m</button></div>
+    <div class="small muted" id="te-played" style="margin-top:4px"></div>
     <div class="row" style="margin-top:14px"><button class="danger" data-ac="del">✕</button><button class="grow ghost" data-ac="cancel">${esc(t('cancel'))}</button><button class="grow primary" data-ac="save">${esc(t('save'))}</button></div>`,
     (bg, close) => {
       const eff = () => { $('#te-eff', bg).textContent = '= ' + money((+st.rate || 0) * (1 - (+st.pct || 0) / 100)) + t('perHour'); $$('[data-tpc]', bg).forEach(b => b.classList.toggle('sel', +b.dataset.tpc === +st.pct)); };
@@ -257,6 +257,12 @@ function editTimer(id, tid) {
       $('#te-pct', bg).oninput = e => { st.pct = Math.min(100, Math.max(0, +e.target.value || 0)); eff(); };
       $$('[data-tpc]', bg).forEach(b => b.onclick = () => { st.pct = +b.dataset.tpc; $('#te-pct', bg).value = st.pct; eff(); });
       eff();
+      const ref0 = tm0.stopAt || tm0.pausedAt || Date.now();
+      const startFrom = () => { const v = $('#te-start', bg).value; if (!v) return tm0.startAt; const [h, m] = v.split(':').map(Number); const d = new Date(ref0); d.setHours(h, m, 0, 0); let st = d.getTime(); if (st > ref0 + 60000) st -= 86400000; return st; };
+      const played = () => { const st = startFrom(); $('#te-played', bg).textContent = t('played') + ': ' + hm(Math.max(0, ref0 - st - (tm0.pausedMs || 0)) / M); };
+      $('#te-start', bg).oninput = played;
+      $$('[data-sh]', bg).forEach(b => b.onclick = () => { const st = startFrom() + (+b.dataset.sh) * M; $('#te-start', bg).value = hhmm(st); played(); });
+      played();
       if (typeOf(S, tm0.type).perPerson) setTimeout(() => { const i = $('#te-note', bg); i.focus(); i.select(); }, 60);
       const apply = fn => { const s2 = SESS[id]; if (!s2) return close(); saveSess(id, Object.assign({}, s2, { timers: fn(s2.timers) })); close(true); };
       $$('[data-ac]', bg).forEach(b => b.onclick = async () => {
@@ -265,12 +271,12 @@ function editTimer(id, tid) {
         if (a === 'pause') return apply(ts => ts.map(x => x.id === tid ? (x.pausedAt ? resumeTimer(x, n) : pauseTimer(x, n)) : x));
         if (a === 'stop') return apply(ts => ts.map(x => x.id === tid ? stopTimer(x, n) : x));
         if (a === 'del') { close(null); if (await confirmBox(t('delTimer') + '?', t('remove'), true)) { const s2 = SESS[id]; saveSess(id, Object.assign({}, s2, { timers: s2.timers.filter(x => x.id !== tid) })); } return; }
-        const mins = $('#te-min', bg).value; const note = $('#te-note', bg).value.trim();
+        const newStart = startFrom(); const note = $('#te-note', bg).value.trim();
         apply(ts => ts.map(x => {
           if (x.id !== tid) return x;
           const y = Object.assign({}, x, { type: st.type, rate: +st.rate || 0, pct: +st.pct || 0, note });
           if (st.type !== x.type) y.baseRate = +typeOf(S, st.type).rate;
-          if (mins !== '' && !isNaN(+mins) && +mins !== curMin && +mins >= 0) { const ref = x.stopAt || x.pausedAt || n; y.startAt = ref - (+mins) * M - (x.pausedMs || 0); }
+          if (hhmm(newStart) !== hhmm(x.startAt)) y.startAt = newStart;
           return y;
         }));
       });
@@ -498,6 +504,7 @@ function openSummary() {
 (async () => {
   registerSW();
   DB = await openDB();
+  if (needsSetup(DB)) return setupGate('register');
   DB.onStatus(st => statusDot($('#st'), st));
   DB.onSettings(s => { S = normSettings(s); render(); rerenderPanel(); });
   DB.onSessions(m => {
