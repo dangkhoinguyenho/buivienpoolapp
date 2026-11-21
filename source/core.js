@@ -453,28 +453,39 @@ function setupGate(which) {
   $('#g-go').onclick = () => { try { const c = decodeConn($('#g-code').value); if (!c.cfg || !c.key) throw 0; LS.set('ph_conn', c); location.reload(); } catch (e) { toast('Invalid code'); } };
 }
 
-/* ---------- iOS-style time wheel ---------- */
+/* ---------- iOS-style time wheel (hours & minutes loop around: …11, 12, 1, 2… / …58, 59, 00, 01…) ---------- */
 const WH = 40;
+const WCOLS = { h: { n: 12, k: 9, lbl: i => i + 1 }, m: { n: 60, k: 7, lbl: i => pad(i) }, p: { n: 2, k: 1, lbl: i => ['AM', 'PM'][i] } };
 function wheelHTML() {
   const pads = '<div class="wi"></div><div class="wi"></div>';
-  const col = (c, arr) => `<div class="wcol" data-c="${c}">${pads}${arr.map(v => `<div class="wi">${v}</div>`).join('')}${pads}</div>`;
-  return `<div class="wheel"><div class="whl"></div>${col('h', Array.from({ length: 12 }, (_, i) => i + 1))}${col('m', Array.from({ length: 60 }, (_, i) => pad(i)))}${col('p', ['AM', 'PM'])}</div>`;
+  const col = c => { const { n, k, lbl } = WCOLS[c]; let h = ''; for (let j = 0; j < n * k; j++) h += `<div class="wi">${lbl(j % n)}</div>`; return `<div class="wcol" data-c="${c}">${pads}${h}${pads}</div>`; };
+  return `<div class="wheel"><div class="whl"></div>${col('h')}${col('m')}${col('p')}</div>`;
 }
+const wIdx = c => Math.round(c.scrollTop / WH);
+function wheelPut(c, v) { const { n, k } = WCOLS[c.dataset.c]; c.scrollTop = (Math.floor(k / 2) * n + v) * WH; wheelMark(c); }
 function wheelSet(root, ts) {
   const d = new Date(ts); const h = d.getHours();
-  const idx = { h: (h % 12 || 12) - 1, m: d.getMinutes(), p: h >= 12 ? 1 : 0 };
-  for (const c of $$('.wcol', root)) { c.scrollTop = idx[c.dataset.c] * WH; wheelMark(c); }
+  const val = { h: (h % 12 || 12) - 1, m: d.getMinutes(), p: h >= 12 ? 1 : 0 };
+  for (const c of $$('.wcol', root)) wheelPut(c, val[c.dataset.c]);
 }
-function wheelMark(c) { const i = Math.round(c.scrollTop / WH); $$('.wi', c).forEach((el, k) => el.classList.toggle('on', k - 2 === i)); }
-function wheelGet(root) { // -> {h24, m}
-  const v = {}; for (const c of $$('.wcol', root)) v[c.dataset.c] = Math.round(c.scrollTop / WH);
-  const h12 = Math.min(11, Math.max(0, v.h)) + 1; const pm = v.p >= 1;
-  return { h: (h12 % 12) + (pm ? 12 : 0), m: Math.min(59, Math.max(0, v.m)) };
+function wheelMark(c) { const i = wIdx(c); const items = c.children; for (let k = 2; k < items.length - 2; k++) items[k].classList.toggle('on', k - 2 === i); }
+function wheelVal(c) { const { n } = WCOLS[c.dataset.c]; return ((wIdx(c) % n) + n) % n; }
+function wheelGet(root) { // -> {h (0-23), m}
+  const v = {}; for (const c of $$('.wcol', root)) v[c.dataset.c] = wheelVal(c);
+  return { h: ((v.h + 1) % 12) + (v.p ? 12 : 0), m: v.m };
 }
 function wheelWire(root, onChange) {
   for (const c of $$('.wcol', root)) {
-    let tmr; c.addEventListener('scroll', () => { wheelMark(c); clearTimeout(tmr); tmr = setTimeout(() => onChange && onChange(), 120); });
-    $$('.wi', c).forEach((el, k) => el.addEventListener('click', () => { if (el.textContent) c.scrollTo({ top: (k - 2) * WH, behavior: 'smooth' }); }));
+    let tmr;
+    c.addEventListener('scroll', () => {
+      wheelMark(c); clearTimeout(tmr);
+      tmr = setTimeout(() => { // recentre into the middle copy so it never runs out
+        const { n, k } = WCOLS[c.dataset.c];
+        if (k > 1) { const i = wIdx(c); if (i < n * 2 || i >= n * (k - 2)) wheelPut(c, ((i % n) + n) % n); }
+        onChange && onChange();
+      }, 140);
+    });
+    c.addEventListener('click', e => { const el = e.target.closest('.wi'); if (!el || !el.textContent) return; const k = [...c.children].indexOf(el) - 2; c.scrollTo({ top: k * WH, behavior: 'smooth' }); });
   }
 }
 
