@@ -247,8 +247,8 @@ function editTimer(id, tid) {
     <label>${esc(t('ratePerHr'))}</label><div class="row"><div class="seg grow" id="te-type">${S.tableTypes.map(x => `<button data-ty="${x.id}" class="${x.id === st.type ? 'sel' : ''}">${esc(typeName(S, x.id))}</button>`).join('')}</div><input id="te-rate" type="number" inputmode="decimal" step="any" value="${st.rate}" style="width:90px"></div>
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-tpc="${p}">${p === 50 ? '50% ' + esc(t('practice')) : p === 100 ? esc(t('free100')) : '0%'}</button>`).join('')}<input id="te-pct" type="number" inputmode="decimal" style="width:80px" value="${st.pct}"></div>
     <div id="te-eff" style="font-size:18px;font-weight:700;margin:10px 0;color:var(--blue2)"></div>
-    <label>${esc(t('startTime'))}</label><div class="row"><button data-sh="-5" style="min-width:64px">−5m</button><input id="te-start" type="time" value="${hhmm(tm0.startAt)}" style="font-size:22px;text-align:center"><button data-sh="5" style="min-width:64px">+5m</button></div>
-    <div class="small muted" id="te-played" style="margin-top:4px"></div>
+    <label>${esc(t('startTime'))}</label>${wheelHTML()}
+    <div class="row" style="margin-top:8px"><button data-sh="-5" style="min-width:70px">−5m</button><div class="grow small muted" id="te-played" style="text-align:center"></div><button data-sh="5" style="min-width:70px">+5m</button></div>
     <div class="row" style="margin-top:14px"><button class="danger" data-ac="del">✕</button><button class="grow ghost" data-ac="cancel">${esc(t('cancel'))}</button><button class="grow primary" data-ac="save">${esc(t('save'))}</button></div>`,
     (bg, close) => {
       const eff = () => { $('#te-eff', bg).textContent = '= ' + money((+st.rate || 0) * (1 - (+st.pct || 0) / 100)) + t('perHour'); $$('[data-tpc]', bg).forEach(b => b.classList.toggle('sel', +b.dataset.tpc === +st.pct)); };
@@ -258,11 +258,12 @@ function editTimer(id, tid) {
       $$('[data-tpc]', bg).forEach(b => b.onclick = () => { st.pct = +b.dataset.tpc; $('#te-pct', bg).value = st.pct; eff(); });
       eff();
       const ref0 = tm0.stopAt || tm0.pausedAt || Date.now();
-      const startFrom = () => { const v = $('#te-start', bg).value; if (!v) return tm0.startAt; const [h, m] = v.split(':').map(Number); const d = new Date(ref0); d.setHours(h, m, 0, 0); let st = d.getTime(); if (st > ref0 + 60000) st -= 86400000; return st; };
+      const wh = $('.wheel', bg);
+      const startFrom = () => { const { h, m } = wheelGet(wh); const d = new Date(ref0); d.setHours(h, m, 0, 0); let st = d.getTime(); if (st > ref0 + 60000) st -= 86400000; return st; };
       const played = () => { const st = startFrom(); $('#te-played', bg).textContent = t('played') + ': ' + hm(Math.max(0, ref0 - st - (tm0.pausedMs || 0)) / M); };
-      $('#te-start', bg).oninput = played;
-      $$('[data-sh]', bg).forEach(b => b.onclick = () => { const st = startFrom() + (+b.dataset.sh) * M; $('#te-start', bg).value = hhmm(st); played(); });
-      played();
+      requestAnimationFrame(() => { wheelSet(wh, tm0.startAt); played(); });
+      wheelWire(wh, played);
+      $$('[data-sh]', bg).forEach(b => b.onclick = () => { wheelSet(wh, startFrom() + (+b.dataset.sh) * M); played(); });
       if (typeOf(S, tm0.type).perPerson) setTimeout(() => { const i = $('#te-note', bg); i.focus(); i.select(); }, 60);
       const apply = fn => { const s2 = SESS[id]; if (!s2) return close(); saveSess(id, Object.assign({}, s2, { timers: fn(s2.timers) })); close(true); };
       $$('[data-ac]', bg).forEach(b => b.onclick = async () => {
@@ -505,6 +506,7 @@ function openSummary() {
   registerSW();
   DB = await openDB();
   if (needsSetup(DB)) return setupGate('register');
+  installHint();
   DB.onStatus(st => statusDot($('#st'), st));
   DB.onSettings(s => { S = normSettings(s); render(); rerenderPanel(); });
   DB.onSessions(m => {

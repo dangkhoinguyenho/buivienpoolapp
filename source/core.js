@@ -45,7 +45,7 @@ const STR = {
     override: 'Price changed', splitMismatch: 'Split amounts must add up to the total', counter: 'Counter',
     noBills: 'No bills yet today', cancelledTables: 'Cancelled tables', voids: 'Cancelled bills', lang: 'Tiếng Việt',
     business: 'Business day', printSummary: 'Print summary', limitSet: 'Set a time limit', manager: 'Manager',
-    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', startTime: 'Timer started at', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
+    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', startTime: 'Timer started at', installHint: 'Install as an app: tap Share ⬆ then "Add to Home Screen".', offlineUse: 'Use on this device only (no sync yet)', offlineHelp: 'Works fully on this device. Nothing from your store is shown here unless the device is connected.', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
   },
   vi: {
     pool: 'Bida lỗ', carom: 'Bida phăng', all: 'Tất cả', inUse: 'Đang chơi', free: 'Trống', paused: 'Tạm dừng', start: 'Bắt đầu tính giờ',
@@ -65,7 +65,7 @@ const STR = {
     override: 'Đã sửa giá', splitMismatch: 'Tổng các phần phải bằng tổng tiền', counter: 'Quầy',
     noBills: 'Hôm nay chưa có hóa đơn', cancelledTables: 'Bàn đã hủy', voids: 'Hóa đơn đã hủy', lang: 'English',
     business: 'Ngày làm việc', printSummary: 'In tổng kết', limitSet: 'Đặt giới hạn giờ', manager: 'Quản lý',
-    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', startTime: 'Giờ bắt đầu tính', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
+    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', startTime: 'Giờ bắt đầu tính', installHint: 'Cài như app: bấm Chia sẻ ⬆ rồi "Thêm vào MH chính".', offlineUse: 'Dùng trên máy này (chưa đồng bộ)', offlineHelp: 'Dùng đầy đủ trên máy này. Dữ liệu cửa hàng chỉ hiện khi máy đã kết nối.', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
   }
 };
 let LANG = LS.get('ph_lang', 'en');
@@ -441,12 +441,51 @@ function seedDemo() {
 const DEMO_VER = '3';
 
 /* ---------- Security gate: a hosted copy that is not connected to a store shows nothing ---------- */
-function needsSetup(db) { return db.mode === 'local' && !window.PH_DEMO && location.protocol === 'https:'; }
+function needsSetup(db) { return db.mode === 'local' && !window.PH_DEMO && location.protocol === 'https:' && !LS.get('ph_local_ok', false); }
 function setupGate(which) {
   document.body.innerHTML = `<div style="max-width:440px;margin:12vh auto;padding:24px;text-align:center">
     <div style="font-size:54px">🔒</div><h2>${esc(t('notConnected'))}</h2><p class="muted">${esc(t('notConnectedHelp'))}</p>
     <input id="g-code" placeholder="${esc(t('setupCode'))}" style="margin-top:10px"><button class="primary big" id="g-go" style="width:100%;margin-top:10px">${esc(t('connect'))}</button>
+    <div style="margin:22px 0 8px;color:var(--muted)">— or —</div><button class="big" id="g-local" style="width:100%">${esc(t('offlineUse'))}</button><p class="small muted">${esc(t('offlineHelp'))}</p>
     <p><button class="ghost" id="g-lang" style="margin-top:14px">${esc(t('lang'))}</button></p></div>`;
+  $('#g-local').onclick = () => { LS.set('ph_local_ok', true); location.reload(); };
   $('#g-lang').onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); setupGate(which); };
   $('#g-go').onclick = () => { try { const c = decodeConn($('#g-code').value); if (!c.cfg || !c.key) throw 0; LS.set('ph_conn', c); location.reload(); } catch (e) { toast('Invalid code'); } };
+}
+
+/* ---------- iOS-style time wheel ---------- */
+const WH = 40;
+function wheelHTML() {
+  const pads = '<div class="wi"></div><div class="wi"></div>';
+  const col = (c, arr) => `<div class="wcol" data-c="${c}">${pads}${arr.map(v => `<div class="wi">${v}</div>`).join('')}${pads}</div>`;
+  return `<div class="wheel"><div class="whl"></div>${col('h', Array.from({ length: 12 }, (_, i) => i + 1))}${col('m', Array.from({ length: 60 }, (_, i) => pad(i)))}${col('p', ['AM', 'PM'])}</div>`;
+}
+function wheelSet(root, ts) {
+  const d = new Date(ts); const h = d.getHours();
+  const idx = { h: (h % 12 || 12) - 1, m: d.getMinutes(), p: h >= 12 ? 1 : 0 };
+  for (const c of $$('.wcol', root)) { c.scrollTop = idx[c.dataset.c] * WH; wheelMark(c); }
+}
+function wheelMark(c) { const i = Math.round(c.scrollTop / WH); $$('.wi', c).forEach((el, k) => el.classList.toggle('on', k - 2 === i)); }
+function wheelGet(root) { // -> {h24, m}
+  const v = {}; for (const c of $$('.wcol', root)) v[c.dataset.c] = Math.round(c.scrollTop / WH);
+  const h12 = Math.min(11, Math.max(0, v.h)) + 1; const pm = v.p >= 1;
+  return { h: (h12 % 12) + (pm ? 12 : 0), m: Math.min(59, Math.max(0, v.m)) };
+}
+function wheelWire(root, onChange) {
+  for (const c of $$('.wcol', root)) {
+    let tmr; c.addEventListener('scroll', () => { wheelMark(c); clearTimeout(tmr); tmr = setTimeout(() => onChange && onChange(), 120); });
+    $$('.wi', c).forEach((el, k) => el.addEventListener('click', () => { if (el.textContent) c.scrollTo({ top: (k - 2) * WH, behavior: 'smooth' }); }));
+  }
+}
+
+/* ---------- "Install as app" hint on iPhone / iPad Safari ---------- */
+function installHint() {
+  try {
+    if (window.PH_DEMO || navigator.standalone || matchMedia('(display-mode: standalone)').matches) return;
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (!ios || LS.get('ph_install_hint_off', false)) return;
+    const el = document.createElement('div'); el.className = 'installbar';
+    el.innerHTML = `<span style="font-size:26px">📲</span><span class="grow">${esc(t('installHint'))}</span><button style="background:#fff;color:#16324f;min-height:38px" id="ih-x">${esc(t('ok'))}</button>`;
+    document.body.appendChild(el); $('#ih-x').onclick = () => { LS.set('ph_install_hint_off', true); el.remove(); };
+  } catch (e) { }
 }

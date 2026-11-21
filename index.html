@@ -166,6 +166,17 @@ table.t tr.void td{color:var(--muted);text-decoration:line-through}
 .paybtns button[data-m=card].sel{background:#1a8cff;border-color:#1a8cff;color:#fff}
 .paybtns button[data-m=zelle].sel{background:#7c3aed;border-color:#7c3aed;color:#fff}
 
+/* iOS-style time wheel */
+.wheel{position:relative;display:flex;justify-content:center;gap:4px;height:200px;background:#f6f9fd;border:1px solid var(--line);border-radius:14px;overflow:hidden;user-select:none;-webkit-user-select:none}
+.wheel .wcol{height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;width:76px;-webkit-overflow-scrolling:touch;position:relative;z-index:2;overscroll-behavior:contain}
+.wheel .wcol::-webkit-scrollbar{display:none}
+.wheel .wi{height:40px;line-height:40px;text-align:center;font-size:24px;font-weight:600;scroll-snap-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
+.wheel .wi.on{color:var(--text);font-weight:800}
+.wheel .whl{position:absolute;left:8px;right:8px;top:80px;height:40px;background:#e3f0ff;border-radius:10px;z-index:1}
+.wheel::before,.wheel::after{content:"";position:absolute;left:0;right:0;height:70px;z-index:3;pointer-events:none}
+.wheel::before{top:0;background:linear-gradient(#f6f9fd,rgba(246,249,253,0))}.wheel::after{bottom:0;background:linear-gradient(rgba(246,249,253,0),#f6f9fd)}
+.installbar{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:40;background:#16324f;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(22,50,79,.3)}
+
 .wrap{max-width:420px;margin:12vh auto;padding:20px;text-align:center} a.big{display:block;margin:14px 0;padding:26px;border-radius:16px;color:#fff;text-decoration:none;font-size:22px;font-weight:800}</style></head>
 <body><div class="wrap"><h1>🎱 Pool Hall</h1>
 <a class="big" style="background:#1f8a55" href="register.html">Register · Thu ngân</a>

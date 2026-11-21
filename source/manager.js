@@ -444,7 +444,8 @@ function lockScreen() {
 (async () => {
   registerSW();
   DB = await openDB();
-  if (needsSetup(DB)) { SETUP_ONLY = true; TAB = 'sync'; }
+  if (needsSetup(DB)) return setupGate('manager');
+  installHint();
   DB.onStatus(st => { LAST_ST = st; const el = $('#st'); if (el) statusDot(el, st); });
   let first = true;
   DB.onSettings(s => {
