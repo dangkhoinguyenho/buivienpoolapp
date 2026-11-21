@@ -17,7 +17,7 @@ def page(name, title, js, color):
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="{title}"><meta name="theme-color" content="{color}">
 <link rel="manifest" href="manifest-{name}.json"><link rel="apple-touch-icon" href="icon-{name}.png"><link rel="icon" href="icon-{name}.png">
-<title>{title}</title><style>{css}</style></head>
+<title>{title}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"><style>{css}</style></head>
 <body><div id="app"></div>
 <script>{core}</script>
 <script>{js}</script>
@@ -49,13 +49,13 @@ open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(f"""<!DOCTYP
 <p class="muted small">Open one, then Share → Add to Home Screen.</p><p><a href="guide.html" style="color:#0a6fd6;font-weight:600">📘 Setup &amp; user guide</a></p></div></body></html>""")
 
 open(os.path.join(DIST, 'sw.js'), 'w').write("""// Offline support: app pages are network-first (so updates arrive), Firebase SDK is cache-first.
-const C = 'poolhall-v1';
+const C = 'poolhall-v2';
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(['register.html', 'manager.html', 'index.html']).catch(() => {}))); });
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
-  if (u.hostname === 'www.gstatic.com') {
+  if (u.hostname === 'www.gstatic.com' || u.hostname === 'fonts.gstatic.com' || u.hostname === 'fonts.googleapis.com') {
     e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).then(res => { const cl = res.clone(); caches.open(C).then(c => c.put(e.request, cl)); return res; })));
   } else if (u.origin === location.origin) {
     e.respondWith(fetch(e.request).then(res => { const cl = res.clone(); caches.open(C).then(c => c.put(e.request, cl)); return res; })

@@ -286,7 +286,7 @@ function vTables(v) {
     <div class="row" style="flex-direction:column;gap:2px"><button data-up="${i}" style="min-height:22px;padding:0 10px;font-size:11px">▲</button><button data-dn="${i}" style="min-height:22px;padding:0 10px;font-size:11px">▼</button></div>
     <input style="width:90px" data-xn="${i}" value="${esc(x.name)}"><select style="width:150px" data-xt="${i}">${typeOpts(x.type)}</select>
     <input style="width:150px" type="number" inputmode="decimal" step="any" data-xr="${i}" value="${x.rate ?? ''}" placeholder="${esc(tm('dflt'))} ${money(typeOf(S, x.type).rate)}">
-    ${SESS[x.id] ? `<span class="tag" style="background:#1f4d33">${esc(t('inUse'))}</span>` : ''}<span class="grow"></span><button class="danger" data-xd="${i}" style="min-width:44px">✕</button></div>`).join('')}
+    ${SESS[x.id] ? `<span class="tag" style="background:var(--blue-soft);color:var(--blue)">${esc(t('inUse'))}</span>` : ''}<span class="grow"></span><button class="danger" data-xd="${i}" style="min-width:44px">✕</button></div>`).join('')}
     <p class="muted small">${esc(tm('rateOverride'))}</p><button id="addtable">＋ ${esc(tm('addTable'))}</button></div>`;
   v.innerHTML = h;
   $$('[data-tn]', v).forEach(i => i.onchange = () => { S.tableTypes[+i.dataset.tn].name = i.value.trim() || '—'; saveS(); });
@@ -333,7 +333,7 @@ function vBilling(v) {
   const calcFor = (type, min) => computeBill(S, { tableId: '_preview', startAt: 1, pausedMs: 0, items: [], rate: typeOf(S, type).rate }, 1 + min * 60000);
   const paint = () => {
     const c = calcFor(PV.type, +PV.min || 0);
-    $('#pv-out').innerHTML = `${esc(tm('billedAs'))} <b>${hm(c.billedMin)}</b> → ${money(c.time)}${c.rounding ? ` <span class="muted">(${t('rounding')} ${money(c.rounding)})</span>` : ''} = <b style="color:var(--felt2)">${money(c.total)}</b>`;
+    $('#pv-out').innerHTML = `${esc(tm('billedAs'))} <b>${hm(c.billedMin)}</b> → ${money(c.time)}${c.rounding ? ` <span class="muted">(${t('rounding')} ${money(c.rounding)})</span>` : ''} = <b style="color:var(--blue)">${money(c.total)}</b>`;
     const mins = [15, 30, 37, 45, 52, 60, 61, 75, 95, 125];
     $('#pv-ex').innerHTML = `<table class="t"><thead><tr><th>${esc(t('played'))}</th>${S.tableTypes.map(x => `<th class="right">${esc(typeName(S, x.id))}</th>`).join('')}</tr></thead><tbody>${mins.map(m => `<tr><td>${hm(m)}</td>${S.tableTypes.map(x => { const c = calcFor(x.id, m); return `<td class="right num">${money(c.total)} <span class="muted small">${c.billedMin !== m ? '(' + hm(c.billedMin) + ')' : ''}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
   };

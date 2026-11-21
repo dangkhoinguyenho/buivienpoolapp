@@ -61,7 +61,7 @@ function card(tb) {
   const sub = cur && (cur.type !== tb.type || cur.pct) ? timerLabel(S, cur) : '';
   const badges = [paused ? esc(t('paused')) : '', nT > 1 ? `⏱${nT}` : '', n ? `🥤${n}` : ''].filter(Boolean).join(' ');
   return `<button class="${cls}" data-tid="${tb.id}">${badges ? `<span class="badge">${badges}</span>` : ''}
-    <div><div class="ttype">${esc(typeLbl)}</div><div class="tname">${esc(tb.name)}</div>${sub ? `<div class="small" style="color:#ffe3a3">${esc(sub)}</div>` : ''}${s.note ? `<div class="small" style="opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(s.note)}</div>` : ''}</div>
+    <div><div class="ttype">${esc(typeLbl)}</div><div class="tname">${esc(tb.name)}</div>${sub ? `<div class="small" style="opacity:.85">${esc(sub)}</div>` : ''}${s.note ? `<div class="small" style="opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(s.note)}</div>` : ''}</div>
     <div>${nT ? `<div class="ttime" data-time="${tb.id}"></div>` : ''}<div class="tamt" data-amt="${tb.id}"></div></div></button>`;
 }
 function tick() {
@@ -115,7 +115,7 @@ function startPanel(id) {
     <div class="panel-b"><p class="muted" style="text-align:center;font-size:18px;margin-top:0">${esc(t('free'))}</p>
     <button class="primary big" style="width:100%;min-height:100px;font-size:26px" data-st="${tb.type}" data-pct="0">▶ ${esc(typeName(S, tb.type))} · ${money(own.rate)}${esc(t('perHour'))}</button>
     <button class="big" style="width:100%;margin-top:10px;min-height:70px" data-st="${tb.type}" data-pct="50">▶ ${esc(typeName(S, tb.type))} · ${esc(t('practice'))} ½ · ${money(own.rate / 2)}${esc(t('perHour'))}</button>
-    ${pp.map(x => `<button class="big" style="width:100%;margin-top:10px;min-height:70px;background:#e6fbf7;border-color:#7fd9c8" data-pp="${x.id}">▶ ${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perPerson'))}</button>`).join('')}
+    ${pp.map(x => `<button class="big" style="width:100%;margin-top:10px;min-height:70px;" data-pp="${x.id}">▶ ${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perPerson'))}</button>`).join('')}
 </div>`, panelOpts());
   $$('[data-st]').forEach(b => b.onclick = () => {
     const tm = startTimerFor(id, b.dataset.st, +b.dataset.pct);
@@ -155,10 +155,10 @@ function renderTablePanel() {
   const title = tableLabel(S, id);
   const timers = ss.timers || [];
   const paused = sessPaused(ss); const hasOpen = timers.some(isOpenTimer); const cur = curTimer(ss);
-  const status = timers.length ? `<div class="status tap ${paused ? 'paused' : hasOpen ? '' : 'none'}" id="a-status">
+  const status = timers.length ? `<div class="status tap ${paused ? 'paused' : hasOpen ? '' : 'none'}" id="a-status" style="position:relative"><span style="position:absolute;top:12px;right:14px;opacity:.7">✎</span>
       <div class="lbl">${timers.filter(isOpenTimer).length > 1 ? timers.filter(isOpenTimer).length + ' ' + esc(t('timersRunning')) : cur ? esc(timerLabel(S, cur)) + ' · ' + money(effRate(cur)) + esc(t('perHour')) : ''}${paused ? ' · <b>' + esc(t('resumeHint')) + '</b>' : ''}</div>
       <div class="clock" id="pt-clock">${clockStr(cur ? timerMs(cur, now) : 0)}</div>
-      <div class="row"><span class="lbl grow">${esc(t('total'))} <span style="opacity:.75">· ✎ ${esc(t('tapToEdit'))}</span></span><b style="font-size:22px" id="pt-total">${money(c.total)}</b></div></div>`
+      <div class="row"><span class="lbl grow">${esc(t('total'))}</span><b style="font-size:22px" id="pt-total">${money(c.total)}</b></div></div>`
     : `<div class="status none"><div class="row"><span class="grow">${esc(t('total'))}</span><b style="font-size:24px" id="pt-total">${money(c.total)}</b></div></div>`;
   const tl = timers.map(tm => {
     const x = c.timers.find(y => y.id === tm.id);
@@ -169,8 +169,8 @@ function renderTablePanel() {
       <div class="right"><div class="num" style="font-weight:700" data-tmt="${tm.id}">${clockStr(x.playedMin * M)}</div><div class="num small" data-tma="${tm.id}">${money(x.amount)}</div></div></div>`;
   }).join('');
   const il = (ss.items || []).map((i, ix) => `<div class="bl" data-ie="${ix}"><div class="ic">${S.items.find(y => y.id === i.id && y.cat === 'snacks') ? '🍿' : '🥤'}</div>
-      <div class="grow"><div><b>${i.qty} ×</b> ${esc(i.name)}${i.pct ? ` <span class="small muted">−${i.pct}%</span>` : ''}</div>${i.note ? `<div class="nt">✎ ${esc(i.note)}</div>` : `<div class="small muted">✎ ${esc(t('addNote'))}</div>`}</div>
-      <div class="num" style="font-weight:600">${money(toD(itemLineC(i)))}</div></div>`).join('');
+      <div class="grow"><div><b>${i.qty} ×</b> ${esc(i.name)}${i.pct ? ` <span class="small muted">−${i.pct}%</span>` : ''}</div>${i.note ? `<div class="nt">✎ ${esc(i.note)}</div>` : ''}</div>
+      <div class="num" style="font-weight:600">${money(toD(itemLineC(i)))}</div><span class="muted" style="opacity:.5">✎</span></div>`).join('');
   const cart = CART[id] || [];
   const secs = S.categories.map((cat, ci) => { const its = S.items.filter(i => i.cat === cat.id && i.active !== false); if (!its.length) return '';
     return `<div class="isec"><h4>${esc(catName(S, cat.id))}</h4><div class="ibig">${its.map(i => `<button class="${ci % 2 ? 'n' : 'd'}" data-add="${i.id}">${money(i.price).replace('.00', '')}<span class="s">${esc(i.name.replace(/\s*\$\d+(\.\d+)?$/, '') || i.name)}</span></button>`).join('')}</div></div>`; }).join('');
@@ -178,12 +178,12 @@ function renderTablePanel() {
    <div class="panel-b"><div class="tscreen">
      <div class="a-st">${status}</div>
      <div class="a-it">${secs}<div class="row" style="margin-bottom:12px"><button id="a-other" class="grow" style="min-height:52px">＋ ${esc(t('other'))}</button></div>
-       ${isCounter ? '' : `<div class="isec"><h4>${esc(t('timers'))}</h4><button id="a-timer" class="addtimer">＋ ${esc(t('addTimer'))}</button></div>`}
-       ${cart.length ? `<div class="cart"><div class="small" style="font-weight:700;color:#a15c00;margin-bottom:4px">${esc(t('pending'))}</div>
+       ${cart.length ? `<div class="cart"><div class="small" style="font-weight:700;color:#8a5a00;margin-bottom:4px">${esc(t('pending'))}</div>
          ${cart.map((x, k) => `<div class="cr"><span class="grow" style="font-weight:600">${esc(x.name)}${x.note ? `<br><span class="nt" style="font-weight:400">✎ ${esc(x.note)}</span>` : ''}</span><button data-cn="${k}" style="min-height:40px;padding:0 10px">✎</button><div class="qty"><button data-cq="${k}" data-d="-1">−</button><span>${x.qty}</span><button data-cq="${k}" data-d="1">+</button></div><span class="num" style="width:62px;text-align:right">${money(x.price * x.qty)}</span><button data-cx="${k}" class="danger" style="width:44px;padding:0">✕</button></div>`).join('')}
          <div class="row" style="margin-top:8px"><button class="ghost" id="cart-clear">${esc(t('clear'))}</button><button class="primary grow big" id="cart-add">✓ ${esc(t('addToTable'))} (${cartCount(id)})</button></div></div>` : ''}
+       ${isCounter ? '' : `<div class="isec"><h4>${esc(t('timers'))}</h4><button id="a-timer" class="addtimer">＋ ${esc(t('addTimer'))}</button></div>`}
      </div>
-     <div class="a-bl"><div class="billl">${tl}${timers.some(x => typeOf(S, x.type).perPerson && !x.stopAt) ? `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><button id="a-player" style="width:100%;min-height:52px;background:#e6fbf7;border-color:#7fd9c8;font-size:17px">＋ ${esc(t('player'))}</button></div>` : ''}${il}${tl || il ? '' : `<div class="muted" style="padding:14px 0">${esc(t('noItems'))}</div>`}</div></div>
+     <div class="a-bl"><div class="billl">${tl}${timers.some(x => typeOf(S, x.type).perPerson && !x.stopAt) ? `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><button id="a-player" style="width:100%;min-height:52px;;font-size:17px">＋ ${esc(t('player'))}</button></div>` : ''}${il}${tl || il ? '' : `<div class="muted" style="padding:14px 0">${esc(t('noItems'))}</div>`}</div></div>
    </div></div>
    <div class="panel-f"><div class="bar">
      ${hasOpen ? `<button id="a-pause" class="${paused ? 'primary' : 'warn'}">${paused ? '▶ ' + esc(t('resumeAll')) : '❚❚ ' + esc(t('pauseAll'))}</button>` : ''}
@@ -248,7 +248,7 @@ function editTimer(id, tid) {
     <label>${esc(typeOf(S, tm0.type).perPerson ? t('playerName') : t('lineNote'))}</label><input id="te-note" value="${esc(tm0.note || '')}" placeholder="—" ${typeOf(S, tm0.type).perPerson ? 'style="font-size:20px"' : ''}>
     <label>${esc(t('ratePerHr'))}</label><div class="row"><div class="seg grow" id="te-type">${S.tableTypes.map(x => `<button data-ty="${x.id}" class="${x.id === st.type ? 'sel' : ''}">${esc(typeName(S, x.id))}</button>`).join('')}</div><input id="te-rate" type="number" inputmode="decimal" step="any" value="${st.rate}" style="width:90px"></div>
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-tpc="${p}">${p === 50 ? '50% ' + esc(t('practice')) : p === 100 ? esc(t('free100')) : '0%'}</button>`).join('')}<input id="te-pct" type="number" inputmode="decimal" style="width:80px" value="${st.pct}"></div>
-    <div id="te-eff" style="font-size:18px;font-weight:700;margin:10px 0;color:var(--blue2)"></div>
+    <div id="te-eff" style="font-size:18px;font-weight:700;margin:10px 0;color:var(--text)"></div>
     <div class="tedit2">
       <div><label>${esc(t('startTime'))}</label>${timePickerHTML('s')}<div class="row" style="margin-top:6px"><button data-sh="s|-5" class="grow">−5m</button><button data-sh="s|5" class="grow">+5m</button></div></div>
       <div><label class="row" style="justify-content:space-between;margin-bottom:4px"><span>${esc(t('endTime'))}</span><span class="row" style="gap:6px;color:var(--text)"><input type="checkbox" id="te-run" ${tm0.stopAt ? '' : 'checked'} style="width:22px;min-height:22px"> ${esc(t('stillRunning'))}</span></label>
@@ -314,7 +314,7 @@ function editItem(id, ix) {
     ${it.qty > 1 ? `<div id="ie-nf" class="row hidden" style="margin-top:8px"><span class="small grow">${esc(t('noteFor'))}</span><div class="qty"><button data-nf="-1">−</button><span id="ie-nfv">1</span><button data-nf="1">+</button></div></div>` : ''}
     <label>${esc(t('unitPrice'))} ($)</label><input id="ie-p" type="number" inputmode="decimal" step="any" value="${st.price}">
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-ipc="${p}">${p === 100 ? esc(t('free100')) : p + '%'}</button>`).join('')}</div>
-    <div id="ie-tot" style="font-size:20px;font-weight:700;margin:12px 0;color:var(--blue2)"></div>
+    <div id="ie-tot" style="font-size:20px;font-weight:700;margin:12px 0;color:var(--text)"></div>
     <div class="row"><button class="danger" data-ac="del">✕ ${esc(t('remove'))}</button><button class="grow ghost" data-ac="cancel">${esc(t('cancel'))}</button><button class="grow primary" data-ac="save">${esc(t('save'))}</button></div>`,
     (bg, close) => {
       const paint = () => { $('#ie-q', bg).textContent = st.qty; $('#ie-tot', bg).textContent = '= ' + money(toD(itemLineC(st))); $$('[data-ipc]', bg).forEach(b => b.classList.toggle('sel', +b.dataset.ipc === st.pct)); };
@@ -346,7 +346,7 @@ async function addTimerFlow(id) {
   for (const x of S.tableTypes.filter(y => !y.perPerson && (!tb || y.id === tb.type))) { btns.push([x.id + '|0', `${esc(typeName(S, x.id))}<br><span class="small">${money(x.rate)}${esc(t('perHour'))}</span>`, 'primary']); btns.push([x.id + '|50', `${esc(typeName(S, x.id))} ${esc(t('practice'))} ½<br><span class="small">${money(x.rate / 2)}${esc(t('perHour'))}</span>`, '']); }
   let stopCur = true; const hasOpen = (SESS[id].timers || []).some(isOpenTimer);
   const v = await modal(`<h3>＋ ${esc(t('addTimer'))}</h3>${hasOpen ? `<label class="row" style="gap:10px;color:var(--text);font-size:17px;margin:0 0 12px"><input type="checkbox" id="at-stop" checked style="width:26px;min-height:26px"> ${esc(t('stopCurrent'))}</label>` : ''}
-    <div class="btns" style="grid-template-columns:1fr 1fr">${btns.map(([v, l, c]) => `<button data-v="${v}" class="${c}" style="min-height:70px">${l}</button>`).join('')}${ppTypes(id).map(x => `<button data-v="pp|${x.id}" style="min-height:70px;grid-column:1/-1;background:#e6fbf7;border-color:#7fd9c8">${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perPerson'))}<br><span class="small">＋ 1 ${esc(t('player'))}</span></button>`).join('')}</div><button class="ghost" style="width:100%;margin-top:12px" data-a="n">${esc(t('cancel'))}</button>`,
+    <div class="btns" style="grid-template-columns:1fr 1fr">${btns.map(([v, l, c]) => `<button data-v="${v}" class="${c}" style="min-height:70px">${l}</button>`).join('')}${ppTypes(id).map(x => `<button data-v="pp|${x.id}" style="min-height:70px;grid-column:1/-1;">${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perPerson'))}<br><span class="small">＋ 1 ${esc(t('player'))}</span></button>`).join('')}</div><button class="ghost" style="width:100%;margin-top:12px" data-a="n">${esc(t('cancel'))}</button>`,
     (bg, close) => { $$('[data-v]', bg).forEach(b => b.onclick = () => { const cb = $('#at-stop', bg); stopCur = cb ? cb.checked : false; close(b.dataset.v); }); $('[data-a=n]', bg).onclick = () => close(null); });
   if (!v) return;
   if (v.startsWith('pp|')) { // 4 balls: one more player; other 4-ball players keep running
@@ -402,7 +402,7 @@ function openCheckout(id) {
    <div class="panel-b">
     <div class="box" id="co-lines"></div>
     <div class="row wrap"><span class="muted small">${esc(t('discount'))}</span>${[10, 20, 50].map(p => `<button class="chip" data-qp="${p}">${p}%</button>`).join('')}<button class="chip" id="co-disc">$ / %…</button><button class="chip" data-qp="0">✕</button><button class="chip" id="co-ovr">✎ ${esc(t('changeTotal'))}</button></div>
-    <div class="box" style="text-align:center"><div id="co-total" style="font-size:48px;font-weight:800" class="num"></div><div id="co-ovr-note" class="small" style="color:#a15c00"></div></div>
+    <div class="box" style="text-align:center"><div id="co-total" style="font-size:48px;font-weight:800" class="num"></div><div id="co-ovr-note" class="small" style="color:#8a5a00"></div></div>
     <div class="muted small" style="margin:4px 0 8px">${esc(t('pickMethod'))}</div>
     <div class="paybtns">${['cash', 'card', 'zelle'].map(m => `<button data-m="${m}"><span style="font-size:30px">${MICON[m]}</span>${esc(t(m))}</button>`).join('')}</div>
     <div style="text-align:center;margin-top:10px"><button class="ghost" data-m="split" style="min-height:38px;font-size:14px">${esc(t('split'))}…</button></div>
@@ -414,7 +414,7 @@ function openCheckout(id) {
   const paint = () => {
     const c = calc(); let h = '';
     for (const x of c.timers) h += `<div class="line"><span>⏱ ${esc(timerLabel(S, x))} <span class="muted small">${hm(x.billedMin)} × ${money(x.effRate)}</span></span><span class="num">${money(x.amount)}</span></div>`;
-    for (const i of c.items) h += `<div class="line"><span>${i.qty} × ${esc(i.name)}${i.pct ? ` −${i.pct}%` : ''}${i.note ? ` <span class="small" style="color:#a15c00">(${esc(i.note)})</span>` : ''}</span><span class="num">${money(i.line)}</span></div>`;
+    for (const i of c.items) h += `<div class="line"><span>${i.qty} × ${esc(i.name)}${i.pct ? ` −${i.pct}%` : ''}${i.note ? ` <span class="small" style="color:#8a5a00">(${esc(i.note)})</span>` : ''}</span><span class="num">${money(i.line)}</span></div>`;
     if (c.discount) h += `<div class="line"><span>${esc(t('discount'))}${c.discType === 'pct' ? ' ' + c.discVal + '%' : ''}</span><span class="num">-${money(c.discount)}</span></div>`;
     if (c.rounding) h += `<div class="line muted"><span>${esc(t('rounding'))}</span><span class="num">${c.rounding > 0 ? '+' : ''}${money(c.rounding)}</span></div>`;
     $('#co-lines').innerHTML = h;
@@ -430,7 +430,7 @@ function openCheckout(id) {
       valid = rem === 0;
     }
     ok.disabled = !valid;
-    ok.style.background = { cash: '#16a34a', card: '#1a8cff', zelle: '#7c3aed' }[st.method] || '';
+    ok.style.background = { cash: 'var(--cash)', card: 'var(--card)', zelle: 'var(--zelle)' }[st.method] || '';
     ok.textContent = st.method ? `✓ ${t('paidBy')} ${st.method === 'split' ? t('split') : t(st.method).toUpperCase()} · ${money(c.total)}` : t('pickMethod');
   };
   const payUI = () => {

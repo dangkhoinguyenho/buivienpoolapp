@@ -520,3 +520,42 @@ function timePicker(root, k, ts, onChange) {
   return { get: () => wheelGet(wh), set: t2 => wheelSet(wh, t2) };
 }
 const atTime = ({ h, m }, ref) => { const d = new Date(ref); d.setHours(h, m, 0, 0); let x = d.getTime(); if (x > ref + 60000) x -= 86400000; return x; };
+
+/* ---------- Icons: one consistent line-icon set; symbols in the UI text are swapped for these automatically ---------- */
+const ICONS = {
+  play: '<path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="none"/>',
+  pause: '<rect x="6" y="4.5" width="4" height="15" rx="1" fill="currentColor" stroke="none"/><rect x="14" y="4.5" width="4" height="15" rx="1" fill="currentColor" stroke="none"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor" stroke="none"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', x: '<path d="M18 6 6 18M6 6l12 12"/>', check: '<path d="M20 6 9 17l-5-5"/>',
+  swap: '<path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/>',
+  timer: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 2.5h5"/>',
+  edit: '<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"/>',
+  more: '<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>',
+  cup: '<path d="M6 4h12l-1.6 16.2a2 2 0 0 1-2 1.8H9.6a2 2 0 0 1-2-1.8z"/><path d="M6.6 9h10.8"/>',
+  snack: '<path d="M6 8h12l-1 13H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  cash: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/>',
+  card: '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6.5 15h4"/>',
+  zelle: '<path d="M13 2.5 4.5 14H11l-1 7.5L19.5 10H13z"/>',
+  print: '<path d="M6 9V3h12v6M6 18H4.5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h15a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H18"/><rect x="6" y="14" width="12" height="7"/>',
+  alert: '<path d="M10.3 4 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/>',
+  bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 8 2.5 8h-17S6 15 6 9"/><path d="M10.3 20.5a1.9 1.9 0 0 0 3.4 0"/>',
+  xcircle: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>', okcircle: '<circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.7 2.7L16 9.8"/>',
+  down: '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>', share: '<path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>', lock: '<rect x="4.5" y="11" width="15" height="10" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/>',
+  phone: '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/>', star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/>',
+  book: '<path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2.5zM20 19v2.5H6"/>', rotate: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>', ext: '<path d="M14 4h6v6M10 14 20 4M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>'
+};
+const ic = (n, cls = '') => `<span class="icn ${cls}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[n] || ''}</svg></span>`;
+const SYMBOLS = { '❚❚': 'pause', '⏸': 'pause', '▶': 'play', '■': 'stop', '＋': 'plus', '✕': 'x', '✓': 'check', '⇄': 'swap', '⏱': 'timer', '✎': 'edit', '⋯': 'more', '🥤': 'cup', '🍿': 'snack', '💵': 'cash', '💳': 'card', '⚡': 'zelle', '🖨': 'print', '⚠': 'alert', '🔔': 'bell', '❌': 'xcircle', '✅': 'okcircle', '⬇': 'down', '⬆': 'share', '🔍': 'search', '🔐': 'lock', '🔒': 'lock', '📲': 'phone', '★': 'star', '☆': 'star', 'ℹ': 'alert', '📘': 'book', '↺': 'rotate', '⟲': 'rotate', '↗': 'ext' };
+const SYM_RE = new RegExp('(' + Object.keys(SYMBOLS).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')️?', 'g');
+function iconize(root) {
+  if (!root || root.nodeType === 3) root = root && root.parentNode;
+  if (!root || !root.querySelectorAll && root.nodeType !== 1) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => { const p = n.parentNode; if (!p || /^(INPUT|TEXTAREA|OPTION|SELECT|SCRIPT|STYLE|TITLE)$/.test(p.nodeName) || p.closest('.icn,svg')) return 2; SYM_RE.lastIndex = 0; return SYM_RE.test(n.nodeValue) ? 1 : 2; } });
+  const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+  for (const n of nodes) { const span = document.createElement('span'); SYM_RE.lastIndex = 0; span.innerHTML = esc(n.nodeValue).replace(SYM_RE, (m, k) => ic(SYMBOLS[k])); n.replaceWith(...span.childNodes); }
+}
+if (typeof MutationObserver !== 'undefined') {
+  const startIcons = () => { iconize(document.body); new MutationObserver(ms => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1 || n.nodeType === 3) iconize(n.nodeType === 3 ? n.parentNode : n); }).observe(document.body, { childList: true, subtree: true }); };
+  if (document.body) startIcons(); else addEventListener('DOMContentLoaded', startIcons);
+}
