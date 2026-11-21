@@ -41,7 +41,7 @@ function render() {
   let h = '';
   { // Counter sale: drinks / snacks for people who are not playing — always visible at the top of the floor
     const cs = SESS._counter; const n = cs ? (cs.items || []).reduce((a, i) => a + i.qty, 0) : 0;
-    h += `<div class="grid"><button class="tcard counter ${cs ? 'busy' : ''}" data-tid="_counter"><div><div class="tname" style="font-size:22px">${esc(t('quickSale'))}</div><div class="small" style="opacity:.8;margin-top:4px">${esc(t('counterHelp'))}</div></div>
+    h += `<div class="grid"><button class="tcard counter ${cs ? 'busy' : ''}" data-tid="_counter"><div><div class="tname" style="font-size:22px">${esc(t('quickSale'))}</div></div>
       <div>${cs ? `<div class="tamt" data-amt="_counter"></div><div class="small">${n} ${esc(t('items'))}</div>` : ''}</div></button></div>`;
   }
   for (const ty of S.tableTypes) {
