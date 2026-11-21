@@ -29,35 +29,20 @@ table{border-collapse:collapse;width:100%}td{border-bottom:1px solid #e3ebf5;pad
 <p>Hosting and sync both use free plans: <b>GitHub Pages</b> holds the app and <b>Firebase</b> holds the shared data.</p>
 </div>
 
-<h2 id="setup">One-time setup (about 30 minutes)</h2>
-<h3>Step 1: Put the app online (GitHub Pages)</h3>
+<h2 id="setup">Setup (already done)</h2>
+<div class="card"><p>The app is online at <code>dangkhoinguyenho.github.io/buivienpoolapp</code>, and live sync and sign-in run on Firebase (project <code>buivienpool</code>, Google account dangkhoinguyenho@gmail.com, free Spark plan).</p>
+<table>
+<tr><td>Register login</td><td>Username <b>register</b>. The owner signs in once on each store iPad, and it stays signed in. Staff never need the password.</td></tr>
+<tr><td>Manager login</td><td>Username <b>manager</b>. Owner only, and it opens the Manager.</td></tr>
+</table></div>
+<h3>Install on a store iPad / iPhone</h3>
 <div class="card"><ol>
-<li>Sign in at <b>github.com</b> and click <b>New repository</b>. Name it <code>poolhall</code> and set it to <b>Public</b>, then click <b>Create repository</b>.</li>
-<li>On the new repository page, click <b>uploading an existing file</b>. Drag in <b>every file</b> from the <code>PoolHall-App</code> folder (not the folder itself), then click <b>Commit changes</b>.</li>
-<li>Go to <b>Settings → Pages</b>. Under <i>Build and deployment → Branch</i>, choose <code>main</code> and <code>/ (root)</code>, then click <b>Save</b>.</li>
-<li>Wait 1–2 minutes and refresh. The page shows your link, like <code>https://YOURNAME.github.io/poolhall/</code>. Open it and you should see the Register and Manager buttons.</li>
+<li>Open <code>dangkhoinguyenho.github.io/buivienpoolapp/register.html</code> in <b>Safari</b>.</li>
+<li>Sign in with <b>register</b> and the Register password.</li>
+<li>Tap <b>Share ⬆ → Add to Home Screen</b>. It now opens like a normal app and stays signed in.</li>
 </ol>
-<div class="tip">The files contain no store data and no passwords, so a public repository is safe.</div></div>
-
-<h3>Step 2: Turn on live sync (Firebase)</h3>
-<div class="card"><ol>
-<li>Go to <b>console.firebase.google.com</b>, click <b>Create a project</b>, and name it (e.g. <code>poolhall</code>). You can turn Google Analytics off. Click Create.</li>
-<li>In the left menu, open <b>Build → Firestore Database → Create database</b>. Pick a location near you (e.g. <code>us-west2</code>), choose <b>Start in production mode</b>, and click Create.</li>
-<li>Open the <b>Rules</b> tab. Delete what's there, paste the rules shown in the Manager under <b>Sync &amp; backup → Firestore security rules</b> (there's a Copy button), and click <b>Publish</b>.</li>
-<li>Click the ⚙️ gear → <b>Project settings</b>. Under <i>Your apps</i>, click the <b>&lt;/&gt;</b> (Web) icon, enter any nickname, and click <b>Register app</b>. Skip Hosting. Firebase shows code beginning <code>const firebaseConfig = {</code>. Copy that whole block.</li>
-<li>Open <code>…/poolhall/manager.html</code> on the owner's PC or phone and go to <b>Sync &amp; backup</b>. Paste the code into the box, keep <i>"Upload this device's menu &amp; settings"</i> checked, and tap <b>Create new store</b>.</li>
-<li>The dot at the top turns green and says <b>Synced</b> ✅.</li>
-</ol>
-{{img:sync}}</div>
-
-<h3>Step 3: Install on each device</h3>
-<div class="card"><ol>
-<li>In Manager → <b>Sync &amp; backup</b>, copy the <b>Register link</b> and send it to each counter iPad or iPhone (text or email).</li>
-<li>On each device, open the link in <b>Safari</b>, then tap <b>Share ⬆ → Add to Home Screen</b>. It now opens like a normal app.</li>
-<li>Open the <b>Manager link</b> only on the owner's devices. Anyone with the Manager link has full control, so don't share it. You can also set a <b>Manager PIN</b> under Manager → Store.</li>
-</ol>
-<div class="ok">You only open the link once per device. After that, the home-screen icon remembers the store.</div></div>
-
+<p>For the owner's phone or PC, do the same with <code>…/manager.html</code> and the <b>manager</b> login.</p>
+<div class="tip">If someone who knows the Register password leaves: Manager → <b>Logins &amp; backup</b> → Change Register password. Every iPad is signed out within about an hour, then sign them in again with the new password.</div></div>
 <h3>Step 4: Set up your store</h3>
 <div class="card"><ul>
 <li><b>Store</b>: name, address and phone for receipts, and when the business day ends (default 4 AM, so late-night games count for the right day).</li>
@@ -113,20 +98,19 @@ table{border-collapse:collapse;width:100%}td{border-bottom:1px solid #e3ebf5;pad
 <tr><td>Reports</td><td>Today, yesterday, 7 days, this month, or custom dates. Shows revenue; cash, card and Zelle; pool, 3 Balls, 4 Balls and items; busy hours; items sold; table usage; and losses (price changes, cancelled bills, cancelled tables). <b>Export CSV</b> opens in Excel or Google Sheets.</td></tr>
 <tr><td>Bills</td><td>Every bill. You can search, view and cancel.</td></tr>
 <tr><td>Menu / Tables &amp; prices / Billing rules / Store</td><td>Changes reach every Register within a second or two.</td></tr>
-<tr><td>Sync &amp; backup</td><td>Device links, and <b>Download backup</b> (do it once a month).</td></tr>
+<tr><td>Logins &amp; backup</td><td>Change the Register or Manager password, sign out, and <b>Download backup</b> (do it once a month).</td></tr>
 </table></div>
 {{img:reports}}
 
 <h2 id="update">Updating the app later</h2>
-<div class="card"><ol><li>Ask Claude for the change and download the new <code>PoolHall-App</code> files.</li>
-<li>On GitHub, open your <code>poolhall</code> repository, then <b>Add file → Upload files</b>. Drag in the new files (they replace the old ones) and click <b>Commit changes</b>.</li>
+<div class="card"><ol><li>Ask Claude for the change. Claude pushes it to the <code>buivienpoolapp</code> repository on GitHub.</li>
 <li>Within a few minutes, close and reopen the app on each device. All tables, bills and settings stay, because they live in Firebase, not in the files.</li></ol></div>
 
 <h2 id="help">Problems?</h2>
 <div class="card"><table>
 <tr><td>Dot says "Offline – will sync"</td><td>The Wi-Fi dropped. Keep working, and everything syncs when it's back.</td></tr>
-<tr><td>Dot says "This device only"</td><td>That device isn't connected. Open the Register link from Manager → Sync again.</td></tr>
-<tr><td>"Sync error … permission"</td><td>The Firestore rules weren't published. Redo Step 2.3.</td></tr>
+<tr><td>Asked to sign in again</td><td>The Register password was changed, or someone signed out. Sign in with the current password.</td></tr>
+
 <tr><td>A table I had open closed by itself</td><td>Someone checked it out or moved it on another device. The pop-up says so.</td></tr>
 <tr><td>Printing</td><td>Receipts print to any AirPrint printer from the receipt screen (🖨 Print).</td></tr>
 <tr><td>Cost</td><td>Free. Firebase's free plan allows 50,000 reads and 20,000 writes per day, far more than one pool hall uses.</td></tr>
