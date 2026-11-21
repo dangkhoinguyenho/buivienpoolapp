@@ -116,7 +116,7 @@ function startPanel(id) {
     <button class="primary big" style="width:100%;min-height:100px;font-size:26px" data-st="${tb.type}" data-pct="0">▶ ${esc(typeName(S, tb.type))} · ${money(own.rate)}${esc(t('perHour'))}</button>
     <button class="big" style="width:100%;margin-top:10px;min-height:70px" data-st="${tb.type}" data-pct="50">▶ ${esc(typeName(S, tb.type))} · ${esc(t('practice'))} ½ · ${money(own.rate / 2)}${esc(t('perHour'))}</button>
     ${pp.map(x => `<button class="big" style="width:100%;margin-top:10px;min-height:70px;background:#e6fbf7;border-color:#7fd9c8" data-pp="${x.id}">▶ ${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perPerson'))}</button>`).join('')}
-    ${others.length ? `<div class="btns" style="margin-top:10px;grid-template-columns:1fr">${others.map(x => `<button data-st="${x.id}" data-pct="0" style="min-height:54px">${esc(t('startAs'))} ${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perHour'))}</button>`).join('')}</div>` : ''}</div>`, panelOpts());
+</div>`, panelOpts());
   $$('[data-st]').forEach(b => b.onclick = () => {
     const tm = startTimerFor(id, b.dataset.st, +b.dataset.pct);
     saveSess(id, { tableId: id, openedAt: tm.startAt, timers: [tm], items: [], note: '' });
