@@ -155,10 +155,10 @@ function renderTablePanel() {
   const title = tableLabel(S, id);
   const timers = ss.timers || [];
   const paused = sessPaused(ss); const hasOpen = timers.some(isOpenTimer); const cur = curTimer(ss);
-  const status = timers.length ? `<div class="status ${paused ? 'paused' : hasOpen ? '' : 'none'}">
+  const status = timers.length ? `<div class="status tap ${paused ? 'paused' : hasOpen ? '' : 'none'}" id="a-status">
       <div class="lbl">${timers.filter(isOpenTimer).length > 1 ? timers.filter(isOpenTimer).length + ' ' + esc(t('timersRunning')) : cur ? esc(timerLabel(S, cur)) + ' · ' + money(effRate(cur)) + esc(t('perHour')) : ''}${paused ? ' · <b>' + esc(t('resumeHint')) + '</b>' : ''}</div>
       <div class="clock" id="pt-clock">${clockStr(cur ? timerMs(cur, now) : 0)}</div>
-      <div class="row"><span class="lbl grow">${esc(t('total'))}</span><b style="font-size:22px" id="pt-total">${money(c.total)}</b></div></div>`
+      <div class="row"><span class="lbl grow">${esc(t('total'))} <span style="opacity:.75">· ✎ ${esc(t('tapToEdit'))}</span></span><b style="font-size:22px" id="pt-total">${money(c.total)}</b></div></div>`
     : `<div class="status none"><div class="row"><span class="grow">${esc(t('total'))}</span><b style="font-size:24px" id="pt-total">${money(c.total)}</b></div></div>`;
   const tl = timers.map(tm => {
     const x = c.timers.find(y => y.id === tm.id);
@@ -213,6 +213,7 @@ function renderTablePanel() {
   $$('[data-ie]').forEach(el => el.onclick = () => editItem(id, +el.dataset.ie));
   const ap = $('#a-player'); if (ap) ap.onclick = () => addPlayer(id);
   $$('[data-tm]').forEach(r => r.onclick = () => editTimer(id, r.dataset.tm));
+  const stc = $('#a-status'); if (stc && cur) stc.onclick = () => editTimer(id, cur.id);
   $('#a-checkout').onclick = () => { commitCart(id); openCheckout(id); };
   $('#a-more').onclick = async () => {
     const v = await modal(`<h3>${esc(title)}</h3><label style="margin-top:0">${esc(t('tableNote'))}</label><input id="mn" value="${esc(ss.note || '')}" placeholder="—">
@@ -247,8 +248,12 @@ function editTimer(id, tid) {
     <label>${esc(t('ratePerHr'))}</label><div class="row"><div class="seg grow" id="te-type">${S.tableTypes.map(x => `<button data-ty="${x.id}" class="${x.id === st.type ? 'sel' : ''}">${esc(typeName(S, x.id))}</button>`).join('')}</div><input id="te-rate" type="number" inputmode="decimal" step="any" value="${st.rate}" style="width:90px"></div>
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-tpc="${p}">${p === 50 ? '50% ' + esc(t('practice')) : p === 100 ? esc(t('free100')) : '0%'}</button>`).join('')}<input id="te-pct" type="number" inputmode="decimal" style="width:80px" value="${st.pct}"></div>
     <div id="te-eff" style="font-size:18px;font-weight:700;margin:10px 0;color:var(--blue2)"></div>
-    <label>${esc(t('startTime'))}</label>${wheelHTML()}
-    <div class="row" style="margin-top:8px"><button data-sh="-5" style="min-width:70px">−5m</button><div class="grow small muted" id="te-played" style="text-align:center"></div><button data-sh="5" style="min-width:70px">+5m</button></div>
+    <div class="tedit2">
+      <div><label>${esc(t('startTime'))}</label>${timePickerHTML('s')}<div class="row" style="margin-top:6px"><button data-sh="s|-5" class="grow">−5m</button><button data-sh="s|5" class="grow">+5m</button></div></div>
+      <div><label class="row" style="justify-content:space-between;margin-bottom:4px"><span>${esc(t('endTime'))}</span><span class="row" style="gap:6px;color:var(--text)"><input type="checkbox" id="te-run" ${tm0.stopAt ? '' : 'checked'} style="width:22px;min-height:22px"> ${esc(t('stillRunning'))}</span></label>
+        <div id="te-endw">${timePickerHTML('e')}<div class="row" style="margin-top:6px"><button data-sh="e|-5" class="grow">−5m</button><button data-sh="e|5" class="grow">+5m</button></div></div></div>
+    </div>
+    <div class="small" id="te-played" style="text-align:center;margin-top:8px;font-weight:600"></div>
     <div class="row" style="margin-top:14px"><button class="danger" data-ac="del">✕</button><button class="grow ghost" data-ac="cancel">${esc(t('cancel'))}</button><button class="grow primary" data-ac="save">${esc(t('save'))}</button></div>`,
     (bg, close) => {
       const eff = () => { $('#te-eff', bg).textContent = '= ' + money((+st.rate || 0) * (1 - (+st.pct || 0) / 100)) + t('perHour'); $$('[data-tpc]', bg).forEach(b => b.classList.toggle('sel', +b.dataset.tpc === +st.pct)); };
@@ -257,13 +262,23 @@ function editTimer(id, tid) {
       $('#te-pct', bg).oninput = e => { st.pct = Math.min(100, Math.max(0, +e.target.value || 0)); eff(); };
       $$('[data-tpc]', bg).forEach(b => b.onclick = () => { st.pct = +b.dataset.tpc; $('#te-pct', bg).value = st.pct; eff(); });
       eff();
-      const ref0 = tm0.stopAt || tm0.pausedAt || Date.now();
-      const wh = $('.wheel', bg);
-      const startFrom = () => { const { h, m } = wheelGet(wh); const d = new Date(ref0); d.setHours(h, m, 0, 0); let st = d.getTime(); if (st > ref0 + 60000) st -= 86400000; return st; };
-      const played = () => { const st = startFrom(); $('#te-played', bg).textContent = t('played') + ': ' + hm(Math.max(0, ref0 - st - (tm0.pausedMs || 0)) / M); };
-      requestAnimationFrame(() => { wheelSet(wh, tm0.startAt); played(); });
-      wheelWire(wh, played);
-      $$('[data-sh]', bg).forEach(b => b.onclick = () => { wheelSet(wh, startFrom() + (+b.dataset.sh) * M); played(); });
+      bg.firstChild.style.width = 'min(760px,100%)';
+      const n0 = Date.now();
+      const runEl = $('#te-run', bg);
+      const endTs = () => atTime(tpE.get(), n0);
+      const startTs = () => atTime(tpS.get(), runEl.checked ? (tm0.pausedAt || n0) : endTs());
+      const played = () => {
+        $('#te-endw', bg).style.opacity = runEl.checked ? .35 : 1; $('#te-endw', bg).style.pointerEvents = runEl.checked ? 'none' : '';
+        const st0 = startTs(); const en = runEl.checked ? (tm0.pausedAt || n0) : endTs();
+        const pz = (tm0.pausedMs || 0) + (!runEl.checked && tm0.pausedAt && en > tm0.pausedAt ? 0 : 0);
+        const ms = en - st0 - pz; const el = $('#te-played', bg);
+        el.textContent = ms < 0 ? t('endBeforeStart') : t('played') + ': ' + hm(ms / M); el.style.color = ms < 0 ? 'var(--red)' : '';
+      };
+      const tpS = timePicker(bg, 's', tm0.startAt, played);
+      const tpE = timePicker(bg, 'e', tm0.stopAt || n0, played);
+      runEl.onchange = played;
+      $$('[data-sh]', bg).forEach(b => b.onclick = () => { const [w, d] = b.dataset.sh.split('|'); if (w === 's') tpS.set(startTs() + (+d) * M); else tpE.set(endTs() + (+d) * M); played(); });
+      setTimeout(played, 60);
       if (typeOf(S, tm0.type).perPerson) setTimeout(() => { const i = $('#te-note', bg); i.focus(); i.select(); }, 60);
       const apply = fn => { const s2 = SESS[id]; if (!s2) return close(); saveSess(id, Object.assign({}, s2, { timers: fn(s2.timers) })); close(true); };
       $$('[data-ac]', bg).forEach(b => b.onclick = async () => {
@@ -272,12 +287,18 @@ function editTimer(id, tid) {
         if (a === 'pause') return apply(ts => ts.map(x => x.id === tid ? (x.pausedAt ? resumeTimer(x, n) : pauseTimer(x, n)) : x));
         if (a === 'stop') return apply(ts => ts.map(x => x.id === tid ? stopTimer(x, n) : x));
         if (a === 'del') { close(null); if (await confirmBox(t('delTimer') + '?', t('remove'), true)) { const s2 = SESS[id]; saveSess(id, Object.assign({}, s2, { timers: s2.timers.filter(x => x.id !== tid) })); } return; }
-        const newStart = startFrom(); const note = $('#te-note', bg).value.trim();
+        const newStart = startTs(); const running = runEl.checked; const newEnd = running ? null : endTs(); const note = $('#te-note', bg).value.trim();
+        if (!running && newEnd <= newStart) return toast(t('endBeforeStart'));
         apply(ts => ts.map(x => {
           if (x.id !== tid) return x;
           const y = Object.assign({}, x, { type: st.type, rate: +st.rate || 0, pct: +st.pct || 0, note });
           if (st.type !== x.type) y.baseRate = +typeOf(S, st.type).rate;
           if (hhmm(newStart) !== hhmm(x.startAt)) y.startAt = newStart;
+          if (running) { if (x.stopAt) y.stopAt = null; } // reopen a timer stopped by mistake
+          else if (!x.stopAt || hhmm(newEnd) !== hhmm(x.stopAt)) {
+            if (x.pausedAt) { if (newEnd > x.pausedAt) y.pausedMs = (x.pausedMs || 0) + (newEnd - x.pausedAt); y.pausedAt = null; }
+            y.stopAt = newEnd;
+          }
           return y;
         }));
       });

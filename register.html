@@ -173,15 +173,21 @@ table.t tr.void td{color:var(--muted);text-decoration:line-through}
 .paybtns button[data-m=zelle].sel{background:#7c3aed;border-color:#7c3aed;color:#fff}
 
 /* iOS-style time wheel */
-.wheel{position:relative;display:flex;justify-content:center;gap:4px;height:200px;background:#f6f9fd;border:1px solid var(--line);border-radius:14px;overflow:hidden;user-select:none;-webkit-user-select:none}
+.wheel{position:relative;display:flex;justify-content:center;gap:0;height:200px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;user-select:none;-webkit-user-select:none}
 .wheel .wcol{height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;width:76px;-webkit-overflow-scrolling:touch;position:relative;z-index:2;overscroll-behavior:contain}
 .wheel .wcol::-webkit-scrollbar{display:none}
-.wheel .wi{height:40px;line-height:40px;text-align:center;font-size:24px;font-weight:600;scroll-snap-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
-.wheel .wi.on{color:var(--text);font-weight:800}
-.wheel .whl{position:absolute;left:8px;right:8px;top:80px;height:40px;background:#e3f0ff;border-radius:10px;z-index:1}
+.wheel .wi{height:40px;line-height:40px;text-align:center;font-size:24px;font-weight:500;scroll-snap-align:center;color:#3a4a5c;font-variant-numeric:tabular-nums;transform-origin:center;will-change:transform,opacity}
+.wheel .wi.on{color:#000;font-weight:600}
+.wheel .whl{position:absolute;left:8px;right:8px;top:80px;height:40px;background:rgba(118,118,128,.12);border-radius:9px;z-index:1}
 .wheel::before,.wheel::after{content:"";position:absolute;left:0;right:0;height:70px;z-index:3;pointer-events:none}
-.wheel::before{top:0;background:linear-gradient(#f6f9fd,rgba(246,249,253,0))}.wheel::after{bottom:0;background:linear-gradient(rgba(246,249,253,0),#f6f9fd)}
+.wheel::before{top:0;background:linear-gradient(#fff,rgba(255,255,255,0))}.wheel::after{bottom:0;background:linear-gradient(rgba(255,255,255,0),#fff)}
 .installbar{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:40;background:#16324f;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(22,50,79,.3)}
+
+.tp-native{font-size:26px;text-align:center;min-height:56px;font-weight:600}
+.tedit2{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:700px){.tedit2{grid-template-columns:1fr 1fr}}
+.status.tap{cursor:pointer}.status.tap:active{transform:scale(.99)}
+.wheel .wcol{width:64px}
 </style></head>
 <body><div id="app"></div>
 <script>'use strict';
@@ -231,7 +237,7 @@ const STR = {
     override: 'Price changed', splitMismatch: 'Split amounts must add up to the total', counter: 'Counter',
     noBills: 'No bills yet today', cancelledTables: 'Cancelled tables', voids: 'Cancelled bills', lang: 'Tiếng Việt',
     business: 'Business day', printSummary: 'Print summary', limitSet: 'Set a time limit', manager: 'Manager',
-    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', startTime: 'Timer started at', installHint: 'Install as an app: tap Share ⬆ then "Add to Home Screen".', offlineUse: 'Use on this device only (no sync yet)', offlineHelp: 'Works fully on this device. Nothing from your store is shown here unless the device is connected.', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
+    tablesBusy: 'tables in use', reason: 'Reason', tableCancelled: 'Table cancelled', pending: 'Selected – not added yet', fourBall: '4 Balls', perPerson: '/hr/person', players: 'Players', startTime: 'Started at', endTime: 'Ended at', stillRunning: 'Still running', endBeforeStart: 'End time must be after the start time', tapToEdit: 'tap to edit', installHint: 'Install as an app: tap Share ⬆ then "Add to Home Screen".', offlineUse: 'Use on this device only (no sync yet)', offlineHelp: 'Works fully on this device. Nothing from your store is shown here unless the device is connected.', notConnected: 'This device is not connected to a store', notConnectedHelp: 'Open the setup link from the owner\'s Manager app (Manager → Sync & backup) on this device, or paste the setup code below.', setupCode: 'Setup code', connect: 'Connect', changedElsewhere: 'checked out or moved on another device', player: 'Player', playerName: 'Player name', addPlayers: 'Start timers', timersRunning: 'timers running', noteFor: 'Note is for how many of these?', addNote: 'note', addToTable: 'Add to table', clear: 'Clear', more: 'More', tableNote: 'Table note', lineNote: 'Note (who pays, etc.)', keepOrDiscard: 'You picked items but did not add them.', discard: 'Discard', payWith: 'Paid with', paidBy: 'Paid by', bill2: 'Bill', resumeHint: 'Paused – time is not counting', pickMethod: 'Choose how the customer paid', practice: 'Practice', addTimer: 'Add timer', stopTimer: 'Stop timer', delTimer: 'Delete timer', stopCurrent: 'Stop the current timer', switchTable: 'Switch table', pickSource: 'Which table is switching?', pickDest: 'Switch to which table?', mergeInto: 'busy – merge', confirmMerge: 'Merge into a table that is already playing?', running: 'Running', stopped: 'Stopped', other: 'Other $', quick: 'Quick add', editLine: 'Change price', unitPrice: 'Price', pctOff: 'Discount %', free100: 'Free', ratePerHr: 'Rate per hour', pauseAll: 'Pause', resumeAll: 'Resume', startAs: 'Start as', timers: 'Timers', qty: 'Qty', remove: 'Remove', priceChanges: 'Line price changes / practice', notNow: 'Nothing to switch', otherAmount: 'Amount ($)', itemName: 'Name'
   },
   vi: {
     pool: 'Bida lỗ', carom: 'Bida phăng', all: 'Tất cả', inUse: 'Đang chơi', free: 'Trống', paused: 'Tạm dừng', start: 'Bắt đầu tính giờ',
@@ -251,7 +257,7 @@ const STR = {
     override: 'Đã sửa giá', splitMismatch: 'Tổng các phần phải bằng tổng tiền', counter: 'Quầy',
     noBills: 'Hôm nay chưa có hóa đơn', cancelledTables: 'Bàn đã hủy', voids: 'Hóa đơn đã hủy', lang: 'English',
     business: 'Ngày làm việc', printSummary: 'In tổng kết', limitSet: 'Đặt giới hạn giờ', manager: 'Quản lý',
-    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', startTime: 'Giờ bắt đầu tính', installHint: 'Cài như app: bấm Chia sẻ ⬆ rồi "Thêm vào MH chính".', offlineUse: 'Dùng trên máy này (chưa đồng bộ)', offlineHelp: 'Dùng đầy đủ trên máy này. Dữ liệu cửa hàng chỉ hiện khi máy đã kết nối.', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
+    tablesBusy: 'bàn đang chơi', reason: 'Lý do', tableCancelled: 'Bàn đã hủy', pending: 'Đang chọn – chưa thêm', fourBall: '4 bi', perPerson: '/giờ/người', players: 'Người chơi', startTime: 'Bắt đầu lúc', endTime: 'Kết thúc lúc', stillRunning: 'Vẫn đang chạy', endBeforeStart: 'Giờ kết thúc phải sau giờ bắt đầu', tapToEdit: 'bấm để sửa', installHint: 'Cài như app: bấm Chia sẻ ⬆ rồi "Thêm vào MH chính".', offlineUse: 'Dùng trên máy này (chưa đồng bộ)', offlineHelp: 'Dùng đầy đủ trên máy này. Dữ liệu cửa hàng chỉ hiện khi máy đã kết nối.', notConnected: 'Máy này chưa kết nối với cửa hàng', notConnectedHelp: 'Mở link cài đặt từ app Quản lý của chủ quán (Quản lý → Đồng bộ & sao lưu) trên máy này, hoặc dán mã cài đặt bên dưới.', setupCode: 'Mã cài đặt', connect: 'Kết nối', changedElsewhere: 'đã thanh toán hoặc chuyển ở máy khác', player: 'Người', playerName: 'Tên người chơi', addPlayers: 'Bắt đầu tính giờ', timersRunning: 'giờ đang chạy', noteFor: 'Ghi chú cho mấy cái?', addNote: 'ghi chú', addToTable: 'Thêm vào bàn', clear: 'Xóa chọn', more: 'Thêm', tableNote: 'Ghi chú bàn', lineNote: 'Ghi chú (ai trả, v.v.)', keepOrDiscard: 'Bạn đã chọn món nhưng chưa thêm vào bàn.', discard: 'Bỏ', payWith: 'Trả bằng', paidBy: 'Đã trả bằng', bill2: 'Hóa đơn', resumeHint: 'Đang tạm dừng – không tính giờ', pickMethod: 'Chọn cách khách trả', practice: 'Tập', addTimer: 'Thêm giờ', stopTimer: 'Dừng giờ', delTimer: 'Xóa giờ', stopCurrent: 'Dừng giờ đang chạy', switchTable: 'Chuyển bàn', pickSource: 'Bàn nào muốn chuyển?', pickDest: 'Chuyển sang bàn nào?', mergeInto: 'đang chơi – gộp', confirmMerge: 'Gộp vào bàn đang có khách?', running: 'Đang chạy', stopped: 'Đã dừng', other: 'Khác $', quick: 'Thêm nhanh', editLine: 'Sửa giá', unitPrice: 'Giá', pctOff: 'Giảm %', free100: 'Miễn phí', ratePerHr: 'Giá mỗi giờ', pauseAll: 'Tạm dừng', resumeAll: 'Tiếp tục', startAs: 'Bắt đầu', timers: 'Tính giờ', qty: 'SL', remove: 'Xóa', priceChanges: 'Sửa giá món / giờ tập', notNow: 'Không có bàn để chuyển', otherAmount: 'Số tiền ($)', itemName: 'Tên'
   }
 };
 let LANG = LS.get('ph_lang', 'en');
@@ -654,7 +660,12 @@ function wheelSet(root, ts) {
   const val = { h: (h % 12 || 12) - 1, m: d.getMinutes(), p: h >= 12 ? 1 : 0 };
   for (const c of $$('.wcol', root)) wheelPut(c, val[c.dataset.c]);
 }
-function wheelMark(c) { const i = wIdx(c); const items = c.children; for (let k = 2; k < items.length - 2; k++) items[k].classList.toggle('on', k - 2 === i); }
+function wheelMark(c) {
+  const items = c.children; const pos = c.scrollTop / WH; const i = Math.round(pos);
+  if (c._lo != null) for (let k = c._lo; k <= c._hi; k++) if (items[k]) { items[k].style.transform = ''; items[k].style.opacity = ''; items[k].classList.remove('on'); }
+  c._lo = Math.max(2, i - 4); c._hi = Math.min(items.length - 3, i + 6);
+  for (let k = c._lo; k <= c._hi; k++) { const d = (k - 2) - pos; const el = items[k]; el.style.transform = `perspective(420px) rotateX(${(-d * 21).toFixed(1)}deg) scale(${(1 - Math.min(Math.abs(d), 3) * 0.06).toFixed(3)})`; el.style.opacity = (1 - Math.min(Math.abs(d) * 0.28, 0.85)).toFixed(2); el.classList.toggle('on', k - 2 === i); }
+}
 function wheelVal(c) { const { n } = WCOLS[c.dataset.c]; return ((wIdx(c) % n) + n) % n; }
 function wheelGet(root) { // -> {h (0-23), m}
   const v = {}; for (const c of $$('.wcol', root)) v[c.dataset.c] = wheelVal(c);
@@ -686,6 +697,20 @@ function installHint() {
     document.body.appendChild(el); $('#ih-x').onclick = () => { LS.set('ph_install_hint_off', true); el.remove(); };
   } catch (e) { }
 }
+
+/* ---------- Time picker: the real iOS wheel on iPhone/iPad, the look-alike wheel elsewhere ---------- */
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function timePickerHTML(k) { return IS_IOS ? `<input type="time" class="tp-native" data-tp="${k}">` : `<div data-tp="${k}">${wheelHTML()}</div>`; }
+function timePicker(root, k, ts, onChange) {
+  const el = $(`[data-tp="${k}"]`, root);
+  if (el.tagName === 'INPUT') {
+    el.value = hhmm(ts); el.addEventListener('input', () => onChange && onChange()); el.addEventListener('change', () => onChange && onChange());
+    return { get: () => { const [h, m] = (el.value || hhmm(ts)).split(':').map(Number); return { h, m }; }, set: t2 => { el.value = hhmm(t2); } };
+  }
+  const wh = $('.wheel', el); wheelWire(wh, onChange); requestAnimationFrame(() => wheelSet(wh, ts));
+  return { get: () => wheelGet(wh), set: t2 => wheelSet(wh, t2) };
+}
+const atTime = ({ h, m }, ref) => { const d = new Date(ref); d.setHours(h, m, 0, 0); let x = d.getTime(); if (x > ref + 60000) x -= 86400000; return x; };
 </script>
 <script>'use strict';
 /* ===== Register app (counter / cashier) ===== */
@@ -844,10 +869,10 @@ function renderTablePanel() {
   const title = tableLabel(S, id);
   const timers = ss.timers || [];
   const paused = sessPaused(ss); const hasOpen = timers.some(isOpenTimer); const cur = curTimer(ss);
-  const status = timers.length ? `<div class="status ${paused ? 'paused' : hasOpen ? '' : 'none'}">
+  const status = timers.length ? `<div class="status tap ${paused ? 'paused' : hasOpen ? '' : 'none'}" id="a-status">
       <div class="lbl">${timers.filter(isOpenTimer).length > 1 ? timers.filter(isOpenTimer).length + ' ' + esc(t('timersRunning')) : cur ? esc(timerLabel(S, cur)) + ' · ' + money(effRate(cur)) + esc(t('perHour')) : ''}${paused ? ' · <b>' + esc(t('resumeHint')) + '</b>' : ''}</div>
       <div class="clock" id="pt-clock">${clockStr(cur ? timerMs(cur, now) : 0)}</div>
-      <div class="row"><span class="lbl grow">${esc(t('total'))}</span><b style="font-size:22px" id="pt-total">${money(c.total)}</b></div></div>`
+      <div class="row"><span class="lbl grow">${esc(t('total'))} <span style="opacity:.75">· ✎ ${esc(t('tapToEdit'))}</span></span><b style="font-size:22px" id="pt-total">${money(c.total)}</b></div></div>`
     : `<div class="status none"><div class="row"><span class="grow">${esc(t('total'))}</span><b style="font-size:24px" id="pt-total">${money(c.total)}</b></div></div>`;
   const tl = timers.map(tm => {
     const x = c.timers.find(y => y.id === tm.id);
@@ -902,6 +927,7 @@ function renderTablePanel() {
   $$('[data-ie]').forEach(el => el.onclick = () => editItem(id, +el.dataset.ie));
   const ap = $('#a-player'); if (ap) ap.onclick = () => addPlayer(id);
   $$('[data-tm]').forEach(r => r.onclick = () => editTimer(id, r.dataset.tm));
+  const stc = $('#a-status'); if (stc && cur) stc.onclick = () => editTimer(id, cur.id);
   $('#a-checkout').onclick = () => { commitCart(id); openCheckout(id); };
   $('#a-more').onclick = async () => {
     const v = await modal(`<h3>${esc(title)}</h3><label style="margin-top:0">${esc(t('tableNote'))}</label><input id="mn" value="${esc(ss.note || '')}" placeholder="—">
@@ -936,8 +962,12 @@ function editTimer(id, tid) {
     <label>${esc(t('ratePerHr'))}</label><div class="row"><div class="seg grow" id="te-type">${S.tableTypes.map(x => `<button data-ty="${x.id}" class="${x.id === st.type ? 'sel' : ''}">${esc(typeName(S, x.id))}</button>`).join('')}</div><input id="te-rate" type="number" inputmode="decimal" step="any" value="${st.rate}" style="width:90px"></div>
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-tpc="${p}">${p === 50 ? '50% ' + esc(t('practice')) : p === 100 ? esc(t('free100')) : '0%'}</button>`).join('')}<input id="te-pct" type="number" inputmode="decimal" style="width:80px" value="${st.pct}"></div>
     <div id="te-eff" style="font-size:18px;font-weight:700;margin:10px 0;color:var(--blue2)"></div>
-    <label>${esc(t('startTime'))}</label>${wheelHTML()}
-    <div class="row" style="margin-top:8px"><button data-sh="-5" style="min-width:70px">−5m</button><div class="grow small muted" id="te-played" style="text-align:center"></div><button data-sh="5" style="min-width:70px">+5m</button></div>
+    <div class="tedit2">
+      <div><label>${esc(t('startTime'))}</label>${timePickerHTML('s')}<div class="row" style="margin-top:6px"><button data-sh="s|-5" class="grow">−5m</button><button data-sh="s|5" class="grow">+5m</button></div></div>
+      <div><label class="row" style="justify-content:space-between;margin-bottom:4px"><span>${esc(t('endTime'))}</span><span class="row" style="gap:6px;color:var(--text)"><input type="checkbox" id="te-run" ${tm0.stopAt ? '' : 'checked'} style="width:22px;min-height:22px"> ${esc(t('stillRunning'))}</span></label>
+        <div id="te-endw">${timePickerHTML('e')}<div class="row" style="margin-top:6px"><button data-sh="e|-5" class="grow">−5m</button><button data-sh="e|5" class="grow">+5m</button></div></div></div>
+    </div>
+    <div class="small" id="te-played" style="text-align:center;margin-top:8px;font-weight:600"></div>
     <div class="row" style="margin-top:14px"><button class="danger" data-ac="del">✕</button><button class="grow ghost" data-ac="cancel">${esc(t('cancel'))}</button><button class="grow primary" data-ac="save">${esc(t('save'))}</button></div>`,
     (bg, close) => {
       const eff = () => { $('#te-eff', bg).textContent = '= ' + money((+st.rate || 0) * (1 - (+st.pct || 0) / 100)) + t('perHour'); $$('[data-tpc]', bg).forEach(b => b.classList.toggle('sel', +b.dataset.tpc === +st.pct)); };
@@ -946,13 +976,23 @@ function editTimer(id, tid) {
       $('#te-pct', bg).oninput = e => { st.pct = Math.min(100, Math.max(0, +e.target.value || 0)); eff(); };
       $$('[data-tpc]', bg).forEach(b => b.onclick = () => { st.pct = +b.dataset.tpc; $('#te-pct', bg).value = st.pct; eff(); });
       eff();
-      const ref0 = tm0.stopAt || tm0.pausedAt || Date.now();
-      const wh = $('.wheel', bg);
-      const startFrom = () => { const { h, m } = wheelGet(wh); const d = new Date(ref0); d.setHours(h, m, 0, 0); let st = d.getTime(); if (st > ref0 + 60000) st -= 86400000; return st; };
-      const played = () => { const st = startFrom(); $('#te-played', bg).textContent = t('played') + ': ' + hm(Math.max(0, ref0 - st - (tm0.pausedMs || 0)) / M); };
-      requestAnimationFrame(() => { wheelSet(wh, tm0.startAt); played(); });
-      wheelWire(wh, played);
-      $$('[data-sh]', bg).forEach(b => b.onclick = () => { wheelSet(wh, startFrom() + (+b.dataset.sh) * M); played(); });
+      bg.firstChild.style.width = 'min(760px,100%)';
+      const n0 = Date.now();
+      const runEl = $('#te-run', bg);
+      const endTs = () => atTime(tpE.get(), n0);
+      const startTs = () => atTime(tpS.get(), runEl.checked ? (tm0.pausedAt || n0) : endTs());
+      const played = () => {
+        $('#te-endw', bg).style.opacity = runEl.checked ? .35 : 1; $('#te-endw', bg).style.pointerEvents = runEl.checked ? 'none' : '';
+        const st0 = startTs(); const en = runEl.checked ? (tm0.pausedAt || n0) : endTs();
+        const pz = (tm0.pausedMs || 0) + (!runEl.checked && tm0.pausedAt && en > tm0.pausedAt ? 0 : 0);
+        const ms = en - st0 - pz; const el = $('#te-played', bg);
+        el.textContent = ms < 0 ? t('endBeforeStart') : t('played') + ': ' + hm(ms / M); el.style.color = ms < 0 ? 'var(--red)' : '';
+      };
+      const tpS = timePicker(bg, 's', tm0.startAt, played);
+      const tpE = timePicker(bg, 'e', tm0.stopAt || n0, played);
+      runEl.onchange = played;
+      $$('[data-sh]', bg).forEach(b => b.onclick = () => { const [w, d] = b.dataset.sh.split('|'); if (w === 's') tpS.set(startTs() + (+d) * M); else tpE.set(endTs() + (+d) * M); played(); });
+      setTimeout(played, 60);
       if (typeOf(S, tm0.type).perPerson) setTimeout(() => { const i = $('#te-note', bg); i.focus(); i.select(); }, 60);
       const apply = fn => { const s2 = SESS[id]; if (!s2) return close(); saveSess(id, Object.assign({}, s2, { timers: fn(s2.timers) })); close(true); };
       $$('[data-ac]', bg).forEach(b => b.onclick = async () => {
@@ -961,12 +1001,18 @@ function editTimer(id, tid) {
         if (a === 'pause') return apply(ts => ts.map(x => x.id === tid ? (x.pausedAt ? resumeTimer(x, n) : pauseTimer(x, n)) : x));
         if (a === 'stop') return apply(ts => ts.map(x => x.id === tid ? stopTimer(x, n) : x));
         if (a === 'del') { close(null); if (await confirmBox(t('delTimer') + '?', t('remove'), true)) { const s2 = SESS[id]; saveSess(id, Object.assign({}, s2, { timers: s2.timers.filter(x => x.id !== tid) })); } return; }
-        const newStart = startFrom(); const note = $('#te-note', bg).value.trim();
+        const newStart = startTs(); const running = runEl.checked; const newEnd = running ? null : endTs(); const note = $('#te-note', bg).value.trim();
+        if (!running && newEnd <= newStart) return toast(t('endBeforeStart'));
         apply(ts => ts.map(x => {
           if (x.id !== tid) return x;
           const y = Object.assign({}, x, { type: st.type, rate: +st.rate || 0, pct: +st.pct || 0, note });
           if (st.type !== x.type) y.baseRate = +typeOf(S, st.type).rate;
           if (hhmm(newStart) !== hhmm(x.startAt)) y.startAt = newStart;
+          if (running) { if (x.stopAt) y.stopAt = null; } // reopen a timer stopped by mistake
+          else if (!x.stopAt || hhmm(newEnd) !== hhmm(x.stopAt)) {
+            if (x.pausedAt) { if (newEnd > x.pausedAt) y.pausedMs = (x.pausedMs || 0) + (newEnd - x.pausedAt); y.pausedAt = null; }
+            y.stopAt = newEnd;
+          }
           return y;
         }));
       });
