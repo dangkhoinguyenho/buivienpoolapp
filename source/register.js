@@ -70,7 +70,7 @@ function card(tb) {
 function tick() {
   const now = Date.now();
   const d = dayKey(now, S.dayStartHour);
-  if (d !== curDay) { curDay = d; if (unBills) unBills(); if (DB) unBills = DB.onBills(d, d, b => { TODAY = b; rerenderPanel('bills'); }); }
+  if (d !== curDay) { curDay = d; if (unBills) unBills(); if (DB) unBills = DB.onRecentBills(now - 36 * 3600e3, b => { TODAY = b.filter(x => x.day === curDay); rerenderPanel('bills'); rerenderPanel('summary'); }); }
   for (const el of $$('[data-time]')) {
     const s = SESS[el.dataset.time]; if (!s) continue;
     const cur = curTimer(s); const ms = playedMs(s, now);

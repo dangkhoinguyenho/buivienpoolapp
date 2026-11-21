@@ -271,7 +271,7 @@ function printHTML(html) {
   el.innerHTML = `<div class="rcpt" style="max-width:none;padding:0">${html}</div>`;
   setTimeout(() => window.print(), 60);
 }
-const methodOf = b => { const p = b.payments || {}; const ms = ['cash', 'card', 'zelle'].filter(m => p[m]); return ms.length > 1 ? 'split' : (ms[0] || 'cash'); };
+const methodOf = b => { const p = b.payments || {}; let ms = ['cash', 'card', 'zelle'].filter(m => p[m]); if (!ms.length) ms = ['cash', 'card', 'zelle'].filter(m => m in p); return ms.length > 1 ? 'split' : (ms[0] || 'cash'); };
 
 /* ---------- Summary math (used by both apps) ---------- */
 function summarize(S, bills) {
@@ -313,6 +313,7 @@ class LocalDB {
   onSettings(cb) { return this._sub('settings', () => cb(this._r('settings', null))); }
   onSessions(cb) { return this._sub('sessions', () => cb(this._r('sessions', {}))); }
   onBills(from, to, cb) { return this._sub('bills', () => cb(this._r('bills', []).filter(b => b.day >= from && b.day <= to))); }
+  onRecentBills(since, cb) { return this._sub('bills', () => cb(this._r('bills', []).filter(b => (b.paidAt || 0) >= since))); }
   onStatus(cb) { cb('local'); return () => { }; }
   async saveSettings(s) { this._w('settings', cleanData(s)); }
   async setSession(id, s) { const m = this._r('sessions', {}); m[id] = cleanData(s); this._w('sessions', m); }
@@ -348,6 +349,10 @@ class FireDB {
   onSessions(cb) { return this.F.onSnapshot(this._col('sessions'), qs => { const m = {}; qs.forEach(d => m[d.id] = d.data()); cb(m); }, e => console.error(e)); }
   onBills(from, to, cb) {
     const F = this.F; const q = F.query(this._col('bills'), F.where('day', '>=', from), F.where('day', '<=', to));
+    return F.onSnapshot(q, qs => { const a = []; qs.forEach(d => a.push(d.data())); cb(a); }, e => console.error(e));
+  }
+  onRecentBills(since, cb) { // the Register may only read the last ~2 days (enforced by the database rules)
+    const F = this.F; const q = F.query(this._col('bills'), F.where('paidAt', '>=', since));
     return F.onSnapshot(q, qs => { const a = []; qs.forEach(d => a.push(d.data())); cb(a); }, e => console.error(e));
   }
   onStatus(cb) {
