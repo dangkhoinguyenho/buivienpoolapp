@@ -247,7 +247,7 @@ function editTimer(id, tid) {
   const s = SESS[id]; if (!s) return; const tm0 = s.timers.find(x => x.id === tid); if (!tm0) return;
   const st = { type: tm0.type, rate: tm0.rate, pct: tm0.pct || 0 };
   modal(`<h3>⏱ ${esc(timerLabel(S, tm0))}</h3>
-    ${tm0.stopAt ? '' : `<div class="row" style="margin-bottom:6px"><button class="grow big ${tm0.pausedAt ? 'primary' : 'warn'}" data-ac="pause">${tm0.pausedAt ? '▶ ' + esc(t('resume')) : '❚❚ ' + esc(t('pause'))}</button><button class="grow big" data-ac="stop">■ ${esc(t('stopTimer'))}</button></div>`}
+    ${tm0.stopAt ? '' : `<div class="row" style="margin-bottom:6px"><button class="grow big ${tm0.pausedAt ? 'primary' : 'warn'}" data-ac="pause">${tm0.pausedAt ? '▶ ' + esc(t('resume')) : '❚❚ ' + esc(t('pause'))}</button></div>`}
     <label>${esc(typeOf(S, tm0.type).perPerson ? t('playerName') : t('lineNote'))}</label><input id="te-note" value="${esc(tm0.note || '')}" placeholder="—" ${typeOf(S, tm0.type).perPerson ? 'style="font-size:20px"' : ''}>
     <label>${esc(t('ratePerHr'))}</label><div class="row"><div class="seg grow" id="te-type">${S.tableTypes.map(x => `<button data-ty="${x.id}" class="${x.id === st.type ? 'sel' : ''}">${esc(typeName(S, x.id))}</button>`).join('')}</div><input id="te-rate" type="number" inputmode="decimal" step="any" value="${st.rate}" style="width:90px"></div>
     <label>${esc(t('pctOff'))}</label><div class="row wrap">${[0, 50, 100].map(p => `<button class="chip" data-tpc="${p}">${p === 50 ? '50% ' + esc(t('practice')) : p === 100 ? esc(t('free100')) : '0%'}</button>`).join('')}<input id="te-pct" type="number" inputmode="decimal" style="width:80px" value="${st.pct}"></div>
