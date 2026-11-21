@@ -7,13 +7,12 @@ app.innerHTML = `
 <div class="topbar">
   <h1 id="shop" class="grow"></h1>
   <span id="st" class="dot"></span>
-  <button id="b-switch"></button><button id="b-counter"></button><button id="b-bills"></button><button id="b-sum"></button><button id="b-lang" class="ghost"></button>
+  <button id="b-switch"></button><button id="b-bills"></button><button id="b-sum"></button><button id="b-lang" class="ghost"></button>
 </div>
 <div class="chips" id="chips"></div>
 <div id="tables"></div>`;
 
 $('#b-switch').onclick = () => switchFlow(null);
-$('#b-counter').onclick = () => openTable('_counter');
 $('#b-bills').onclick = openBills;
 $('#b-sum').onclick = openSummary;
 $('#b-lang').onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); render(); rerenderPanel(); };
@@ -35,12 +34,16 @@ const choice = (title, buttons, extra = '') => modal(`<h3>${esc(title)}</h3>${ex
 /* ---------- Home grid ---------- */
 function render() {
   $('#shop').textContent = S.shopName;
-  $('#b-switch').textContent = '⇄ ' + t('switchTable'); $('#b-counter').textContent = t('quickSale'); $('#b-bills').textContent = t('bills'); $('#b-sum').textContent = t('summary'); $('#b-lang').textContent = t('lang');
+  $('#b-switch').textContent = '⇄ ' + t('switchTable'); $('#b-bills').textContent = t('bills'); $('#b-sum').textContent = t('summary'); $('#b-lang').textContent = t('lang');
   const busy = S.tables.filter(x => SESS[x.id]).length;
   const chips = [['all', t('all') + ' ' + S.tables.length], ...S.tableTypes.filter(ty => S.tables.some(x => x.type === ty.id)).map(ty => [ty.id, typeName(S, ty.id)]), ['busy', t('inUse') + ' ' + busy], ['free', t('free') + ' ' + (S.tables.length - busy)]];
   $('#chips').innerHTML = chips.map(([f, l]) => `<button class="chip ${FILTER === f ? 'sel' : ''}" data-f="${f}">${esc(l)}</button>`).join('');
   let h = '';
-  if (SESS._counter) h += `<div class="grid">${card({ id: '_counter', name: t('counter'), type: '' })}</div>`;
+  { // Counter sale: drinks / snacks for people who are not playing — always visible at the top of the floor
+    const cs = SESS._counter; const n = cs ? (cs.items || []).reduce((a, i) => a + i.qty, 0) : 0;
+    h += `<div class="grid"><button class="tcard counter ${cs ? 'busy' : ''}" data-tid="_counter"><div class="row" style="gap:12px;align-items:flex-start"><span style="font-size:30px;line-height:1">🥤</span><div><div class="tname" style="font-size:22px">${esc(t('quickSale'))}</div><div class="small" style="opacity:.8;margin-top:4px">${esc(t('counterHelp'))}</div></div></div>
+      <div>${cs ? `<div class="tamt" data-amt="_counter"></div><div class="small">${n} ${esc(t('items'))}</div>` : ''}</div></button></div>`;
+  }
   for (const ty of S.tableTypes) {
     if (!['all', 'busy', 'free'].includes(FILTER) && FILTER !== ty.id) continue;
     const list = S.tables.filter(x => x.type === ty.id && (FILTER === 'busy' ? SESS[x.id] : FILTER === 'free' ? !SESS[x.id] : true));

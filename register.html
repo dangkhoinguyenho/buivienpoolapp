@@ -184,6 +184,9 @@ table.t tr.void td{color:var(--faint);text-decoration:line-through}
 .tedit2{display:grid;grid-template-columns:1fr;gap:14px}
 @media (min-width:700px){.tedit2{grid-template-columns:1fr 1fr}}
 .installbar{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:40;background:var(--text);color:#fff;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(20,24,31,.25)}
+
+.tcard.counter{grid-column:span 2;min-height:96px}
+@media (max-width:480px){.tcard.counter{grid-column:1/-1}}
 </style></head>
 <body><div id="app"></div>
 <script>'use strict';
@@ -221,7 +224,7 @@ const STR = {
     addItems: 'Add items', checkout: 'Checkout', items: 'Items', tableTime: 'Table time', started: 'Started', rate: 'Rate',
     subtotal: 'Subtotal', discount: 'Discount', rounding: 'Rounding', total: 'Total', changeTotal: 'Change total', resetTotal: 'Use calculated total',
     cash: 'Cash', card: 'Card', zelle: 'Zelle', split: 'Split', received: 'Cash received', change: 'Change due', exact: 'Exact',
-    confirmPay: 'Confirm payment', done: 'Done', print: 'Print', bills: 'Bills', summary: 'Summary', quickSale: 'Counter sale',
+    confirmPay: 'Confirm payment', done: 'Done', print: 'Print', bills: 'Bills', summary: 'Summary', quickSale: 'Counter sale', counterHelp: 'Drinks & snacks – no table',
     noItems: 'No items yet', search: 'Search', close: 'Close', cancel: 'Cancel', ok: 'OK', save: 'Save', remaining: 'Remaining',
     note: 'Customer / note', billed: 'billed', perHour: '/hr', timeUp: 'TIME UP', left: 'left', off: 'Off',
     voidBill: 'Cancel bill', voidReason: 'Reason for cancelling this bill?', voided: 'Cancelled', changeMethod: 'Change payment',
@@ -241,7 +244,7 @@ const STR = {
     addItems: 'Thêm món', checkout: 'Thanh toán', items: 'Món', tableTime: 'Tiền giờ', started: 'Bắt đầu', rate: 'Giá',
     subtotal: 'Tạm tính', discount: 'Giảm giá', rounding: 'Làm tròn', total: 'Tổng cộng', changeTotal: 'Sửa tổng tiền', resetTotal: 'Dùng tổng tự tính',
     cash: 'Tiền mặt', card: 'Thẻ', zelle: 'Zelle', split: 'Chia', received: 'Khách đưa', change: 'Tiền thối', exact: 'Vừa đủ',
-    confirmPay: 'Xác nhận thanh toán', done: 'Xong', print: 'In', bills: 'Hóa đơn', summary: 'Tổng kết', quickSale: 'Bán tại quầy',
+    confirmPay: 'Xác nhận thanh toán', done: 'Xong', print: 'In', bills: 'Hóa đơn', summary: 'Tổng kết', quickSale: 'Bán tại quầy', counterHelp: 'Nước & đồ ăn – không chơi bàn',
     noItems: 'Chưa có món', search: 'Tìm', close: 'Đóng', cancel: 'Hủy', ok: 'OK', save: 'Lưu', remaining: 'Còn lại',
     note: 'Tên khách / ghi chú', billed: 'tính', perHour: '/giờ', timeUp: 'HẾT GIỜ', left: 'còn', off: 'Tắt',
     voidBill: 'Hủy hóa đơn', voidReason: 'Lý do hủy hóa đơn?', voided: 'Đã hủy', changeMethod: 'Đổi cách trả',
@@ -757,13 +760,12 @@ app.innerHTML = `
 <div class="topbar">
   <h1 id="shop" class="grow"></h1>
   <span id="st" class="dot"></span>
-  <button id="b-switch"></button><button id="b-counter"></button><button id="b-bills"></button><button id="b-sum"></button><button id="b-lang" class="ghost"></button>
+  <button id="b-switch"></button><button id="b-bills"></button><button id="b-sum"></button><button id="b-lang" class="ghost"></button>
 </div>
 <div class="chips" id="chips"></div>
 <div id="tables"></div>`;
 
 $('#b-switch').onclick = () => switchFlow(null);
-$('#b-counter').onclick = () => openTable('_counter');
 $('#b-bills').onclick = openBills;
 $('#b-sum').onclick = openSummary;
 $('#b-lang').onclick = () => { setLang(LANG === 'en' ? 'vi' : 'en'); render(); rerenderPanel(); };
@@ -785,12 +787,16 @@ const choice = (title, buttons, extra = '') => modal(`<h3>${esc(title)}</h3>${ex
 /* ---------- Home grid ---------- */
 function render() {
   $('#shop').textContent = S.shopName;
-  $('#b-switch').textContent = '⇄ ' + t('switchTable'); $('#b-counter').textContent = t('quickSale'); $('#b-bills').textContent = t('bills'); $('#b-sum').textContent = t('summary'); $('#b-lang').textContent = t('lang');
+  $('#b-switch').textContent = '⇄ ' + t('switchTable'); $('#b-bills').textContent = t('bills'); $('#b-sum').textContent = t('summary'); $('#b-lang').textContent = t('lang');
   const busy = S.tables.filter(x => SESS[x.id]).length;
   const chips = [['all', t('all') + ' ' + S.tables.length], ...S.tableTypes.filter(ty => S.tables.some(x => x.type === ty.id)).map(ty => [ty.id, typeName(S, ty.id)]), ['busy', t('inUse') + ' ' + busy], ['free', t('free') + ' ' + (S.tables.length - busy)]];
   $('#chips').innerHTML = chips.map(([f, l]) => `<button class="chip ${FILTER === f ? 'sel' : ''}" data-f="${f}">${esc(l)}</button>`).join('');
   let h = '';
-  if (SESS._counter) h += `<div class="grid">${card({ id: '_counter', name: t('counter'), type: '' })}</div>`;
+  { // Counter sale: drinks / snacks for people who are not playing — always visible at the top of the floor
+    const cs = SESS._counter; const n = cs ? (cs.items || []).reduce((a, i) => a + i.qty, 0) : 0;
+    h += `<div class="grid"><button class="tcard counter ${cs ? 'busy' : ''}" data-tid="_counter"><div class="row" style="gap:12px;align-items:flex-start"><span style="font-size:30px;line-height:1">🥤</span><div><div class="tname" style="font-size:22px">${esc(t('quickSale'))}</div><div class="small" style="opacity:.8;margin-top:4px">${esc(t('counterHelp'))}</div></div></div>
+      <div>${cs ? `<div class="tamt" data-amt="_counter"></div><div class="small">${n} ${esc(t('items'))}</div>` : ''}</div></button></div>`;
+  }
   for (const ty of S.tableTypes) {
     if (!['all', 'busy', 'free'].includes(FILTER) && FILTER !== ty.id) continue;
     const list = S.tables.filter(x => x.type === ty.id && (FILTER === 'busy' ? SESS[x.id] : FILTER === 'free' ? !SESS[x.id] : true));
