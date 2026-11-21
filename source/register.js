@@ -36,7 +36,7 @@ function render() {
   $('#shop').textContent = S.shopName;
   $('#b-switch').textContent = '⇄ ' + t('switchTable'); $('#b-bills').textContent = t('bills'); $('#b-sum').textContent = t('summary'); $('#b-lang').textContent = t('lang');
   const busy = S.tables.filter(x => SESS[x.id]).length;
-  const chips = [['all', t('all') + ' ' + S.tables.length], ...S.tableTypes.filter(ty => S.tables.some(x => x.type === ty.id)).map(ty => [ty.id, typeName(S, ty.id)]), ['busy', t('inUse') + ' ' + busy], ['free', t('free') + ' ' + (S.tables.length - busy)]];
+  const chips = [['all', t('all') + ' ' + S.tables.length], ...S.tableTypes.filter(ty => S.tables.some(x => x.type === ty.id)).map(ty => [ty.id, typeName(S, ty.id)]), ['busy', t('inUse') + ' ' + busy], ['free', t('freeTab') + ' ' + (S.tables.length - busy)]];
   $('#chips').innerHTML = chips.map(([f, l]) => `<button class="chip ${FILTER === f ? 'sel' : ''}" data-f="${f}">${esc(l)}</button>`).join('');
   let h = '';
   { // Counter sale: drinks / snacks for people who are not playing — always visible at the top of the floor
