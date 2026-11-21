@@ -1,0 +1,15 @@
+{
+ "name": "Pool Manager",
+ "short_name": "Manager",
+ "start_url": "manager.html",
+ "display": "standalone",
+ "background_color": "#0d1714",
+ "theme_color": "#0d1714",
+ "icons": [
+  {
+   "src": "icon-manager.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

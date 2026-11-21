@@ -1,0 +1,15 @@
+{
+ "name": "Pool Register",
+ "short_name": "Register",
+ "start_url": "register.html",
+ "display": "standalone",
+ "background_color": "#0d1714",
+ "theme_color": "#0d1714",
+ "icons": [
+  {
+   "src": "icon-register.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

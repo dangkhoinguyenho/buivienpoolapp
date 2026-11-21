@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,"><title>Pool Hall App – Live Demo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e9f1fb;font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#16324f}
+header{background:linear-gradient(90deg,#1a8cff,#3aa0ff);color:#fff;padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0 12px 0 0}
+.grp{display:flex;background:rgba(255,255,255,.18);border-radius:10px;padding:3px;gap:3px}
+.grp button,.act{border:0;background:transparent;color:#fff;font:inherit;font-weight:600;padding:8px 12px;border-radius:8px;cursor:pointer}
+.grp button.sel{background:#fff;color:#0a6fd6}
+.act{background:rgba(255,255,255,.18)}
+.tip{padding:10px 16px;color:#40597a;font-size:14px}
+#stage{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;align-items:flex-start;padding:8px 12px 40px}
+.dev{display:flex;flex-direction:column;align-items:center;gap:8px}
+.dev .cap{font-weight:700;font-size:13px;color:#40597a}
+.bezel{background:#1d2733;padding:var(--b);border-radius:var(--r);box-shadow:0 14px 40px rgba(22,50,79,.25)}
+.screen{overflow:hidden;border-radius:calc(var(--r) - var(--b));background:#fff;position:relative}
+.screen iframe{border:0;transform-origin:0 0;position:absolute;left:0;top:0;background:#fff}
+.pc .bezel{border-radius:12px 12px 4px 4px}
+.pc .stand{width:30%;height:14px;background:#c3cfdd;border-radius:0 0 8px 8px}
+body.here{overflow:hidden}body.here #stage{padding:0;display:block}body.here .tip{display:none}
+@media (max-width:900px){header{padding:6px 8px;gap:6px}header h1{display:none}.grp button,.act{padding:6px 9px;font-size:13px}}
+</style></head><body>
+<header>
+  <h1>🎱 Pool Hall App · Demo</h1>
+  <div class="grp" id="mode"><button data-m="here">This device</button><button data-m="all">All devices</button><button data-m="ipad">iPad</button><button data-m="iphone">iPhone</button><button data-m="pc">PC</button></div>
+  <div class="grp" id="appsel"><button data-a="register" class="sel">Register</button><button data-a="manager">Manager</button></div>
+  <button class="act" id="rot">⟲ Rotate iPad</button>
+  <button class="act" id="reset">↺ Reset demo data</button>
+  <button class="act" id="empty">○ Empty store</button>
+  <a class="act" href="guide.html" target="_blank" style="text-decoration:none">📘 Guide</a>
+</header>
+<div class="tip" id="tip"></div>
+<div id="stage"></div>
+<script>
+'use strict';
+const DEV = { ipad: { w: 1180, h: 820, b: 14, r: 34, name: 'iPad' }, iphone: { w: 390, h: 844, b: 12, r: 46, name: 'iPhone' }, pc: { w: 1440, h: 900, b: 12, r: 12, name: 'PC' } };
+let mode = (matchMedia('(pointer:coarse)').matches || innerWidth < 1200) ? 'here' : 'all', appName = 'register', land = true;
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+function frame(dev, app, maxW) {
+  let { w, h, b, r, name } = DEV[dev]; if (dev === 'ipad' && !land) [w, h] = [h, w];
+  const maxH = window.innerHeight - 170;
+  const sc = Math.min(1, (maxW - 2 * b) / w, mode === 'all' ? 1 : (maxH - 2 * b) / h);
+  const lbl = app === 'manager' ? 'Manager' : 'Register';
+  return `<div class="dev ${dev}"><div class="cap">${name} · ${lbl} <a href="${app}.html" target="_blank" style="color:#0a6fd6;font-weight:600">open full ↗</a></div>
+    <div class="bezel" style="--b:${b}px;--r:${r}px"><div class="screen" style="width:${Math.round(w * sc)}px;height:${Math.round(h * sc)}px">
+    <iframe src="${app}.html" style="width:${w}px;height:${h}px;transform:scale(${sc})"></iframe></div></div>${dev === 'pc' ? '<div class="stand"></div>' : ''}</div>`;
+}
+function draw() {
+  const W = Math.min(window.innerWidth - 24, 2200);
+  document.querySelectorAll('#mode button').forEach(b => b.classList.toggle('sel', b.dataset.m === mode));
+  document.querySelectorAll('#appsel button').forEach(b => b.classList.toggle('sel', b.dataset.a === appName));
+  document.getElementById('appsel').style.display = mode === 'all' ? 'none' : '';
+  document.getElementById('rot').style.display = (mode === 'all' || mode === 'ipad') ? '' : 'none';
+  let h;
+  document.body.classList.toggle('here', mode === 'here');
+  if (mode === 'here') {
+    document.getElementById('tip').textContent = '';
+    const top = document.querySelector('header').offsetHeight;
+    document.getElementById('stage').innerHTML = `<iframe src="${appName}.html" style="border:0;width:100vw;height:calc(100vh - ${top}px);display:block;background:#fff"></iframe>`;
+    return;
+  }
+  if (mode === 'all') {
+    const big = W > 1500 ? (W - 480) / 2 : W > 900 ? W - 460 : W;
+    h = frame('ipad', 'register', Math.min(big, 1000)) + frame('iphone', 'register', Math.min(W, 340)) + frame('pc', 'manager', Math.min(W > 1500 ? big : W, 1100));
+    document.getElementById('tip').innerHTML = '<b>Try it:</b> open a table on the iPad, add drinks on the iPhone, and watch the PC manager get a 🔔 notification when you check out. All three share the same data, like the real synced version. Everything you click is real; nothing is downloaded.';
+  } else {
+    h = frame(mode, appName, W);
+    document.getElementById('tip').textContent = 'Showing the ' + DEV[mode].name + ' layout at its real size (scaled to fit your screen).';
+  }
+  document.getElementById('stage').innerHTML = h;
+}
+document.getElementById('mode').onclick = e => { const b = e.target.closest('button'); if (b) { mode = b.dataset.m; draw(); } };
+document.getElementById('appsel').onclick = e => { const b = e.target.closest('button'); if (b) { appName = b.dataset.a; draw(); } };
+document.getElementById('rot').onclick = () => { land = !land; draw(); };
+document.getElementById('reset').onclick = () => { seedDemo(); draw(); };
+document.getElementById('empty').onclick = () => { LS.set('ph_l_settings', defaultSettings()); LS.set('ph_l_sessions', {}); LS.set('ph_l_bills', []); draw(); };
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(draw, 200); });
+if (!lsGet('ph_l_settings') || lsGet('ph_demo_ver') !== JSON.stringify(DEMO_VER)) { seedDemo(); LS.set('ph_demo_ver', DEMO_VER); }
+draw();
+</script>
+</body></html>

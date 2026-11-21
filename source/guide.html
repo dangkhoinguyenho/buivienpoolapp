@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pool Hall App – Setup &amp; User Guide</title>
+<style>
+body{margin:0;background:#eef4fb;color:#16324f;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(90deg,#1a8cff,#3aa0ff);color:#fff;padding:28px 20px}
+header h1{margin:0;font-size:26px}header p{margin:6px 0 0;opacity:.9}
+main{max-width:860px;margin:0 auto;padding:10px 18px 60px}
+h2{margin:34px 0 8px;font-size:22px;border-bottom:2px solid #cfe3fa;padding-bottom:6px}
+h3{margin:22px 0 6px;font-size:18px}
+.card{background:#fff;border:1px solid #d6e2f0;border-radius:14px;padding:16px 20px;margin:14px 0}
+ol li,ul li{margin:6px 0}
+code{background:#eef4fb;border:1px solid #d6e2f0;border-radius:6px;padding:1px 6px;font-size:14px}
+img{width:100%;border-radius:12px;border:1px solid #d6e2f0;box-shadow:0 6px 20px rgba(22,50,79,.12);margin:10px 0}
+.tip{background:#fff8e6;border:1px solid #f7d891;border-radius:12px;padding:10px 14px;margin:12px 0}
+.ok{background:#e9f9ef;border:1px solid #a7e3bd;border-radius:12px;padding:10px 14px;margin:12px 0}
+nav a{display:inline-block;margin:4px 8px 4px 0;color:#0a6fd6;font-weight:600;text-decoration:none}
+table{border-collapse:collapse;width:100%}td{border-bottom:1px solid #e3ebf5;padding:8px 6px;vertical-align:top}td:first-child{font-weight:600;width:34%}
+</style></head><body>
+<header><h1>🎱 Pool Hall App</h1><p>Setup &amp; user guide · Register (counter) + Manager (owner)</p></header>
+<main>
+<nav><a href="#overview">Overview</a><a href="#setup">One-time setup</a><a href="#daily">Daily use</a><a href="#manager">Manager</a><a href="#update">Updating</a><a href="#help">Problems?</a></nav>
+
+<h2 id="overview">Overview</h2>
+<div class="card">
+<p>There are two apps that share the same data in real time:</p>
+<ul><li><b>Register</b> (<code>register.html</code>) runs on the counter iPads and iPhones. Staff use it to open tables, run timers, add drinks and snacks, switch tables, check out, and cancel bills.</li>
+<li><b>Manager</b> (<code>manager.html</code>) runs on the owner's phone or PC. It shows live tables, notifications, reports by cash, card and Zelle, the menu, prices, billing rules, and backups.</li></ul>
+<p>Hosting and sync both use free plans: <b>GitHub Pages</b> holds the app and <b>Firebase</b> holds the shared data.</p>
+</div>
+
+<h2 id="setup">One-time setup (about 30 minutes)</h2>
+<h3>Step 1: Put the app online (GitHub Pages)</h3>
+<div class="card"><ol>
+<li>Sign in at <b>github.com</b> and click <b>New repository</b>. Name it <code>poolhall</code> and set it to <b>Public</b>, then click <b>Create repository</b>.</li>
+<li>On the new repository page, click <b>uploading an existing file</b>. Drag in <b>every file</b> from the <code>PoolHall-App</code> folder (not the folder itself), then click <b>Commit changes</b>.</li>
+<li>Go to <b>Settings → Pages</b>. Under <i>Build and deployment → Branch</i>, choose <code>main</code> and <code>/ (root)</code>, then click <b>Save</b>.</li>
+<li>Wait 1–2 minutes and refresh. The page shows your link, like <code>https://YOURNAME.github.io/poolhall/</code>. Open it and you should see the Register and Manager buttons.</li>
+</ol>
+<div class="tip">The files contain no store data and no passwords, so a public repository is safe.</div></div>
+
+<h3>Step 2: Turn on live sync (Firebase)</h3>
+<div class="card"><ol>
+<li>Go to <b>console.firebase.google.com</b>, click <b>Create a project</b>, and name it (e.g. <code>poolhall</code>). You can turn Google Analytics off. Click Create.</li>
+<li>In the left menu, open <b>Build → Firestore Database → Create database</b>. Pick a location near you (e.g. <code>us-west2</code>), choose <b>Start in production mode</b>, and click Create.</li>
+<li>Open the <b>Rules</b> tab. Delete what's there, paste the rules shown in the Manager under <b>Sync &amp; backup → Firestore security rules</b> (there's a Copy button), and click <b>Publish</b>.</li>
+<li>Click the ⚙️ gear → <b>Project settings</b>. Under <i>Your apps</i>, click the <b>&lt;/&gt;</b> (Web) icon, enter any nickname, and click <b>Register app</b>. Skip Hosting. Firebase shows code beginning <code>const firebaseConfig = {</code>. Copy that whole block.</li>
+<li>Open <code>…/poolhall/manager.html</code> on the owner's PC or phone and go to <b>Sync &amp; backup</b>. Paste the code into the box, keep <i>"Upload this device's menu &amp; settings"</i> checked, and tap <b>Create new store</b>.</li>
+<li>The dot at the top turns green and says <b>Synced</b> ✅.</li>
+</ol>
+{{img:sync}}</div>
+
+<h3>Step 3: Install on each device</h3>
+<div class="card"><ol>
+<li>In Manager → <b>Sync &amp; backup</b>, copy the <b>Register link</b> and send it to each counter iPad or iPhone (text or email).</li>
+<li>On each device, open the link in <b>Safari</b>, then tap <b>Share ⬆ → Add to Home Screen</b>. It now opens like a normal app.</li>
+<li>Open the <b>Manager link</b> only on the owner's devices. Anyone with the Manager link has full control, so don't share it. You can also set a <b>Manager PIN</b> under Manager → Store.</li>
+</ol>
+<div class="ok">You only open the link once per device. After that, the home-screen icon remembers the store.</div></div>
+
+<h3>Step 4: Set up your store</h3>
+<div class="card"><ul>
+<li><b>Store</b>: name, address and phone for receipts, and when the business day ends (default 4 AM, so late-night games count for the right day).</li>
+<li><b>Tables &amp; prices</b>: Pool $15/hr, Carom $10/hr, 4 Balls $4/hr per person. You can rename, add or remove tables.</li>
+<li><b>Menu</b>: Drink $1–$5 and Snack $1–$5 are set up already. You can change prices or add items.</li>
+<li><b>Billing rules</b>: by default the total rounds to the nearest $1 (.50 and up rounds up). Use the <i>Try it</i> box to see what a customer pays before changing anything.</li>
+</ul>
+<div class="tip">Do a <b>2–3 night trial</b> alongside KiotViet before its subscription ends.</div></div>
+
+<h2 id="daily">Daily use (Register)</h2>
+{{img:home}}
+<div class="card"><table>
+<tr><td>Home screen</td><td>White = free. Blue = playing. Orange = paused. Each card shows the timer and the amount so far.</td></tr>
+<tr><td>Open a table</td><td>Tap a free table, then the big <b>▶ Pool / Carom</b> button. Other choices are <b>Practice ½</b> (half price) and, on carom tables, <b>4 Balls</b>. You stay on the table so you can add drinks right away.</td></tr>
+</table></div>
+{{img:start}}
+<h3>The table screen</h3>
+{{img:table}}
+<div class="card"><table>
+<tr><td>Add drinks / snacks</td><td>Tap the $ buttons. Items go into the yellow <b>Selected – not added yet</b> box first, so mis-taps are easy to fix: use <b>− / +</b> for quantity or <b>✕</b> to remove. Tap <b>✎</b> to write who it's for. Then tap <b>Add to table</b>.</td></tr>
+<tr><td>Other $ amount</td><td><b>＋ Other $</b> lets you type any name and price.</td></tr>
+<tr><td>Change price / note</td><td>Tap any line on the bill:
+<ul><li><b>Drinks and snacks:</b> change the quantity, price, % off or Free, or add a note. If a note applies to only 1 of 2 drinks, the app splits the line.</li>
+<li><b>Timers:</b> change the rate (e.g. $10 → $8/hr), % off (50% = practice), or minutes played, or add a note.</li></ul></td></tr>
+<tr><td>Pause (break)</td><td><b>❚❚ Pause</b> stops the clock and the screen turns orange. <b>▶ Resume</b> continues. The break is <b>not</b> charged.</td></tr>
+<tr><td>Cut time / new timer</td><td><b>＋ Add timer</b> lets you pick Pool, Carom, Practice ½ or 4 Balls. <i>"Stop the current timer"</i> is checked by default. Add as many timers as you need, and they all stay on the bill.</td></tr>
+<tr><td>Switch table</td><td><b>⇄ Switch table</b> (on the table or the home screen). Pick the new table. Timers move <b>exactly as they are</b>, so a pool timer stays pool. Add a carom timer yourself if needed. Picking a table that's already playing merges the two bills.</td></tr>
+<tr><td>More ⋯</td><td>Table note, and <b>Cancel table</b> (opened by mistake or the guest left right away). Nothing is charged, but the owner sees it.</td></tr>
+</table></div>
+<h3>4 Balls ($4/hr per person)</h3>
+{{img:4balls}}
+<div class="card"><ul><li>It starts with <b>1 player</b>. Tap <b>＋ Player</b> for each new player, who gets their own timer from that moment.</li>
+<li>Tap a player's timer to type their name. When someone leaves, tap their timer and tap <b>■ Stop timer</b>.</li></ul></div>
+<h3>Checkout</h3>
+{{img:checkout}}
+<div class="card"><ol><li>Tap <b>Checkout</b>. The bill freezes at that moment.</li>
+<li>Optional: tap a <b>discount</b> chip (10/20/50%, or $ / %…), or <b>✎ Change total</b> to type the final price.</li>
+<li>Tap how the customer paid: <b>💵 Cash</b>, <b>💳 Card</b> (after running it in the Chase app) or <b>⚡ Zelle</b> (after seeing the transfer). <b>Split…</b> is for mixed payments.</li>
+<li>Check that the colored button says the right method (e.g. <i>"✓ Paid by CARD · $15.00"</i>), then tap it.</li></ol>
+<div class="tip">Picked the wrong method? Go to <b>Bills</b>, tap the bill, and tap <b>Change payment</b>. To cancel a paid bill, use <b>Cancel bill</b> (a reason is required, and the owner is notified).</div></div>
+<div class="card"><table>
+<tr><td>Counter sale</td><td>Sell drinks or snacks without a table.</td></tr>
+<tr><td>Bills</td><td>Today's bills. You can reprint, change the payment method, or cancel a bill.</td></tr>
+<tr><td>Summary</td><td>End-of-day totals for cash, card and Zelle. Use it to count the drawer.</td></tr>
+<tr><td>Tiếng Việt</td><td>Switches the language (each device remembers its own choice).</td></tr>
+</table></div>
+
+<h2 id="manager">Manager (owner)</h2>
+{{img:live}}
+<div class="card"><table>
+<tr><td>Live tables</td><td>Every table in use, with its timer and amount, updating live.</td></tr>
+<tr><td>🔔 Notifications</td><td>A sound and pop-up for every checkout, cancelled table and cancelled bill. On a PC, tap 🔔 → <i>Turn on desktop notifications</i>. Notifications only arrive while the Manager is open.</td></tr>
+<tr><td>Reports</td><td>Today, yesterday, 7 days, this month, or custom dates. Shows revenue; cash, card and Zelle; pool, carom, 4 Balls and items; busy hours; items sold; table usage; and losses (price changes, cancelled bills, cancelled tables). <b>Export CSV</b> opens in Excel or Google Sheets.</td></tr>
+<tr><td>Bills</td><td>Every bill. You can search, view and cancel.</td></tr>
+<tr><td>Menu / Tables &amp; prices / Billing rules / Store</td><td>Changes reach every Register within a second or two.</td></tr>
+<tr><td>Sync &amp; backup</td><td>Device links, and <b>Download backup</b> (do it once a month).</td></tr>
+</table></div>
+{{img:reports}}
+
+<h2 id="update">Updating the app later</h2>
+<div class="card"><ol><li>Ask Claude for the change and download the new <code>PoolHall-App</code> files.</li>
+<li>On GitHub, open your <code>poolhall</code> repository, then <b>Add file → Upload files</b>. Drag in the new files (they replace the old ones) and click <b>Commit changes</b>.</li>
+<li>Within a few minutes, close and reopen the app on each device. All tables, bills and settings stay, because they live in Firebase, not in the files.</li></ol></div>
+
+<h2 id="help">Problems?</h2>
+<div class="card"><table>
+<tr><td>Dot says "Offline – will sync"</td><td>The Wi-Fi dropped. Keep working, and everything syncs when it's back.</td></tr>
+<tr><td>Dot says "This device only"</td><td>That device isn't connected. Open the Register link from Manager → Sync again.</td></tr>
+<tr><td>"Sync error … permission"</td><td>The Firestore rules weren't published. Redo Step 2.3.</td></tr>
+<tr><td>A table I had open closed by itself</td><td>Someone checked it out or moved it on another device. The pop-up says so.</td></tr>
+<tr><td>Printing</td><td>Receipts print to any AirPrint printer from the receipt screen (🖨 Print).</td></tr>
+<tr><td>Cost</td><td>Free. Firebase's free plan allows 50,000 reads and 20,000 writes per day, far more than one pool hall uses.</td></tr>
+</table></div>
+</main></body></html>
