@@ -178,6 +178,7 @@ function renderTablePanel() {
    <div class="panel-b"><div class="tscreen">
      <div class="a-st">${status}</div>
      <div class="a-it">${secs}<div class="row" style="margin-bottom:12px"><button id="a-other" class="grow" style="min-height:52px">＋ ${esc(t('other'))}</button></div>
+       ${isCounter ? '' : `<div class="isec"><h4>${esc(t('timers'))}</h4><button id="a-timer" class="addtimer">＋ ${esc(t('addTimer'))}</button></div>`}
        ${cart.length ? `<div class="cart"><div class="small" style="font-weight:700;color:#a15c00;margin-bottom:4px">${esc(t('pending'))}</div>
          ${cart.map((x, k) => `<div class="cr"><span class="grow" style="font-weight:600">${esc(x.name)}${x.note ? `<br><span class="nt" style="font-weight:400">✎ ${esc(x.note)}</span>` : ''}</span><button data-cn="${k}" style="min-height:40px;padding:0 10px">✎</button><div class="qty"><button data-cq="${k}" data-d="-1">−</button><span>${x.qty}</span><button data-cq="${k}" data-d="1">+</button></div><span class="num" style="width:62px;text-align:right">${money(x.price * x.qty)}</span><button data-cx="${k}" class="danger" style="width:44px;padding:0">✕</button></div>`).join('')}
          <div class="row" style="margin-top:8px"><button class="ghost" id="cart-clear">${esc(t('clear'))}</button><button class="primary grow big" id="cart-add">✓ ${esc(t('addToTable'))} (${cartCount(id)})</button></div></div>` : ''}
@@ -186,7 +187,7 @@ function renderTablePanel() {
    </div></div>
    <div class="panel-f"><div class="bar">
      ${hasOpen ? `<button id="a-pause" class="${paused ? 'primary' : 'warn'}">${paused ? '▶ ' + esc(t('resumeAll')) : '❚❚ ' + esc(t('pauseAll'))}</button>` : ''}
-     ${isCounter ? '' : `<button id="a-timer">＋ ${esc(t('addTimer'))}</button><button id="a-move">⇄ ${esc(t('switchTable'))}</button>`}
+     ${isCounter ? '' : `<button id="a-move">⇄ ${esc(t('switchTable'))}</button>`}
      <button class="primary co" id="a-checkout" ${!s && !cart.length ? 'disabled' : ''}>${esc(t('checkout'))} <span id="pt-co">${money(c.total)}</span></button></div></div>`,
     panelOpts({ wide: true, beforeClose: () => { if (!cartCount(id)) return true; askCart(id).then(v => { if (v === 'a') commitCart(id); if (v) { delete CART[id]; closePanel(true); } }); return false; } }));
 
@@ -341,13 +342,17 @@ function editItem(id, ix) {
 }
 async function addTimerFlow(id) {
   const btns = [];
-  for (const x of S.tableTypes.filter(y => !y.perPerson)) { btns.push([x.id + '|0', `${esc(typeName(S, x.id))}<br><span class="small">${money(x.rate)}${esc(t('perHour'))}</span>`, 'primary']); btns.push([x.id + '|50', `${esc(typeName(S, x.id))} ${esc(t('practice'))} ½<br><span class="small">${money(x.rate / 2)}${esc(t('perHour'))}</span>`, '']); }
+  const tb = tableOf(S, id); // only timers that fit this table: pool tables → pool, 3 Balls tables → 3 Balls / 4 Balls
+  for (const x of S.tableTypes.filter(y => !y.perPerson && (!tb || y.id === tb.type))) { btns.push([x.id + '|0', `${esc(typeName(S, x.id))}<br><span class="small">${money(x.rate)}${esc(t('perHour'))}</span>`, 'primary']); btns.push([x.id + '|50', `${esc(typeName(S, x.id))} ${esc(t('practice'))} ½<br><span class="small">${money(x.rate / 2)}${esc(t('perHour'))}</span>`, '']); }
   let stopCur = true; const hasOpen = (SESS[id].timers || []).some(isOpenTimer);
   const v = await modal(`<h3>＋ ${esc(t('addTimer'))}</h3>${hasOpen ? `<label class="row" style="gap:10px;color:var(--text);font-size:17px;margin:0 0 12px"><input type="checkbox" id="at-stop" checked style="width:26px;min-height:26px"> ${esc(t('stopCurrent'))}</label>` : ''}
     <div class="btns" style="grid-template-columns:1fr 1fr">${btns.map(([v, l, c]) => `<button data-v="${v}" class="${c}" style="min-height:70px">${l}</button>`).join('')}${ppTypes(id).map(x => `<button data-v="pp|${x.id}" style="min-height:70px;grid-column:1/-1;background:#e6fbf7;border-color:#7fd9c8">${esc(typeName(S, x.id))} · ${money(x.rate)}${esc(t('perPerson'))}<br><span class="small">＋ 1 ${esc(t('player'))}</span></button>`).join('')}</div><button class="ghost" style="width:100%;margin-top:12px" data-a="n">${esc(t('cancel'))}</button>`,
     (bg, close) => { $$('[data-v]', bg).forEach(b => b.onclick = () => { const cb = $('#at-stop', bg); stopCur = cb ? cb.checked : false; close(b.dataset.v); }); $('[data-a=n]', bg).onclick = () => close(null); });
   if (!v) return;
-  if (v.startsWith('pp|')) return addPlayer(id, v.slice(3)); // 4 balls: one more player, others keep running
+  if (v.startsWith('pp|')) { // 4 balls: one more player; other 4-ball players keep running
+    if (stopCur) { const n2 = Date.now(); const s2 = SESS[id]; SESS[id] = Object.assign({}, s2, { timers: s2.timers.map(x => typeOf(S, x.type).perPerson ? x : stopTimer(x, n2)) }); }
+    return addPlayer(id, v.slice(3));
+  }
   const [type, pct] = v.split('|'); const n = Date.now(); const s = SESS[id];
   const timers = (stopCur ? s.timers.map(x => stopTimer(x, n)) : s.timers.slice()).concat([startTimerFor(id, type, +pct)]);
   saveSess(id, Object.assign({}, s, { timers }));
